@@ -1,6 +1,7 @@
 <script>
     import Form from "../reusable/Form.svelte";
     import TextInput from "../reusable/TextInput.svelte";
+    import { user } from "../../stores/user";
 
     let values = {
         identifier: '',
@@ -11,6 +12,7 @@
         alert(JSON.stringify(values, null, 4));
 
         // fetch login endpoint
+        // $user = response from fetch;
     }
 </script>
 

@@ -15,7 +15,7 @@
 	router("/login", () => page = Login);
 	router("/register", () => page = Register);
 	router("/create", () => page = Create);
-	router("/*", () => page = NotFound);
+	router("*", () => page = NotFound);
 
 	router.start();
 </script>

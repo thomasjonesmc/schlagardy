@@ -19,6 +19,5 @@
         border-radius: .5em;
         background-color: var(--primary-color);
         color: var(--alt-font-color);
-        box-shadow: .2em .2em 0 .2em var(--alt-color-light);
     }
 </style>
