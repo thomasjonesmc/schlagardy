@@ -1,6 +1,6 @@
 const User = require('../models/User');
 
-function getAllUsers() {
+const getAllUsers = async () => {
     return User.findAll({
         attributes: {
             exclude: ["password"]
@@ -8,7 +8,7 @@ function getAllUsers() {
     });
 }
 
-function getUserById(id) {
+const getUserById = async (id) => {
     return User.findByPk(id, {
         attributes: {
             exclude: ["password"]
@@ -16,9 +16,20 @@ function getUserById(id) {
     });
 }
 
-// function createUser({username, email, password})
+const createUser = async ({email, username, displayName, password}) => {
+    const { dataValues } = await User.create({
+        email, username, displayName, password
+    });
+
+    // ignore the password
+    const { password: _, ...response } = dataValues;
+
+    return response;
+}
+
 
 module.exports = {
     getAllUsers,
-    getUserById
+    getUserById,
+    createUser
 }

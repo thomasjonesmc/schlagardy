@@ -10,7 +10,14 @@ const getUserById = (req, res) => {
     return serv.getUserById(id);
 }
 
+const createUser = (req, res) => {
+    const user = req.body;
+
+    return serv.createUser(user);
+}
+
 module.exports = {
     getAllUsers,
-    getUserById
+    getUserById,
+    createUser
 }
