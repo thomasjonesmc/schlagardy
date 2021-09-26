@@ -1,4 +1,7 @@
-const User = require('../models/User');
+const { Op } = require("sequelize");
+const User = require("../models/User");
+const { error } = require("../util/error");
+const jwt = require("jsonwebtoken");
 
 const getAllUsers = async () => {
     return User.findAll({
@@ -17,12 +20,27 @@ const getUserById = async (id) => {
 }
 
 const createUser = async ({email, username, displayName, password}) => {
-    const { dataValues } = await User.create({
-        email, username, displayName, password
+    
+    const [ user, created ] = await User.findOrCreate({
+        where: {
+            [Op.or]: [
+                { email },
+                { username }
+            ]
+        },
+        defaults: {
+            email, username, displayName, password
+        }
     });
 
-    // ignore the password
-    const { password: _, ...response } = dataValues;
+    if (!created) error("User already exists");
+
+    const token = jwt.sign({userId: user.id}, process.env.JWT_SECRET);
+
+    console.log(token);
+
+    // take the password out of the response so its not visible
+    const { password: _, ...response } = user.toJSON();
 
     return response;
 }
