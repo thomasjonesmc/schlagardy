@@ -4,29 +4,35 @@ require("./reusable");
 const createUser = yup.object({
     username: 
         yup.string()
-        .required("required")
-        .min(3, "minimum of 3 characters")
-        .max(15, "max of 15 characters"),
+        .required()
+        .min(1)
+        .max(15)
+        .matches(/^[a-zA-Z0-9_]{1,15}$/, "username can only contain letters, numbers, and underscores"),
     email: 
         yup.string()
         .email("invalid email")
-        .required("required"),
+        .required(),
     displayName: 
         yup.string()
-        .required("required")
-        .min(2, "minimum of 2 characters")
-        .max(50, "max of 50 characters"),
+        .label("display name")
+        .required()
+        .min(1)
+        .max(50),
     password: 
         yup.string()
-        .required("required")
-        .min(8, "minimum of 8 characters")
-        .max(250, "max of 250 characters"),
+        .required()
+        .min(8)
+        .max(250),
     passwordCheck: 
         yup.string()
-        .required("required")
-        .equalTo(yup.ref("password"), "doesn't match password")
-})
+        .label("password check")
+        .required()
+        .equalTo(yup.ref("password"))
+});
+
+const userId = yup.number().required().positive().integer().label("userId");
 
 module.exports = {
-    createUser
+    createUser,
+    userId
 }

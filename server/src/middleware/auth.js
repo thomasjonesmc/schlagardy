@@ -1,28 +1,27 @@
 const { error } = require("../util/error");
 const jwt = require("jsonwebtoken");
 
-const auth = (req, res, next) => {
-    // testing that errorhandler catches middleware errors
-    // error("error in authentication middleware");
+const authUser = (req, res, next) => {
+    
+    const authHeader = req.headers.authorization;
 
-    const header = req.headers.authorization;
+    if (!authHeader) error("Invalid Header", 401);
 
-    if (!header) error("Invalid Header", 401);
+    const [ , token ] = authHeader.split(' ');
+    
+    if (!token) error("Invalid Access Token", 401);
 
-    const [ , token ] = header.split(' ');
+    jwt.verify(token, process.env.JWT_ACCESS_SECRET, (err, data) => {
 
-    if (!token) error("Invalid Token", 401);
+        if (!data || err) error("Invalid Access Token", 403);
 
-    console.log(token);
+        const { userId } = data;
 
-    jwt.verify(token, process.env.JWT_SECRET, (err, { userId }) => {
-        if (err) error("Token verification failed", 403);
         req.userId = userId;
-    })
-
-    next();
+        next();
+    });
 }
 
 module.exports = {
-    auth
+    authUser
 }

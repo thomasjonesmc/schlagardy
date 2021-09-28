@@ -26,7 +26,7 @@ const User = db.define('users', {
 });
 
 User.sync().then(() => {
-    console.log('users table created!!');
+    console.log('users table synced');
 });
 
 module.exports = User;

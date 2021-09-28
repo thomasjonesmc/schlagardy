@@ -1,20 +1,23 @@
 const serv = require("../services/user.services");
+const { __day_in_ms } = require("../util/constants");
 const vld = require("../validation/user.validation");
 
 const getAllUsers = (req, res) => {
     return serv.getAllUsers();
 }
 
-const getUserById = (req, res) => {
+const getUserById = async (req, res) => {
     const { userId } = req.params;
+
+    await vld.userId.validate(userId);
 
     return serv.getUserById(userId);
 }
 
-const getLoggedInUser = (req, res) => {
+const getLoggedInUser = async (req, res) => {
     const { userId } = req;
 
-    console.log("\n\n", userId, "\n\n");
+    await vld.userId.validate(userId);
 
     return serv.getUserById(userId);
 }
@@ -24,12 +27,28 @@ const createUser = async (req, res) => {
 
     await vld.createUser.validate(user);
 
-    return serv.createUser(user);
+    const { refreshToken, ...createdUser } = await serv.createUser(user);
+
+    res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        maxAge: __day_in_ms * 365 * 5,
+        sameSite: "strict"
+    });
+
+    return createdUser;
+}
+
+const refreshAccessToken = async (req, res) => {
+
+    const refreshToken = req.cookies?.refreshToken;
+
+    return serv.refreshAccessToken(refreshToken);
 }
 
 module.exports = {
     getAllUsers,
     getUserById,
     getLoggedInUser,
-    createUser
+    createUser,
+    refreshAccessToken
 }

@@ -57,3 +57,8 @@ button, .link-button {
 .link-button:hover {
 	text-decoration: none;
 }
+
+button:disabled {
+	filter: opacity(.6);
+	cursor: not-allowed;
+}

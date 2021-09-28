@@ -1,5 +1,6 @@
 <script>
 	import router from "page";
+	import { refreshUser } from "./lifecycle/user";
 	import Footer from "./components/layout/Footer.svelte";
 	import Header from "./components/layout/Header.svelte";
 	import Create from "./components/pages/Create.svelte";
@@ -18,6 +19,8 @@
 	router("*", () => page = NotFound);
 
 	router.start();
+
+	refreshUser();
 </script>
 
 <Header />

@@ -1,7 +1,7 @@
 const { Op } = require("sequelize");
 const User = require("../models/User");
 const { error } = require("../util/error");
-const jwt = require("jsonwebtoken");
+const auth = require("../util/auth");
 
 const getAllUsers = async () => {
     return User.findAll({
@@ -35,19 +35,37 @@ const createUser = async ({email, username, displayName, password}) => {
 
     if (!created) error("User already exists");
 
-    const token = jwt.sign({userId: user.id}, process.env.JWT_SECRET);
+    const accessToken = auth.generateAccessToken(user.id);
+    const refreshToken = auth.generateRefreshToken(user.id);
 
-    console.log(token);
+    auth.setRefreshToken(refreshToken);
 
     // take the password out of the response so its not visible
     const { password: _, ...response } = user.toJSON();
 
-    return response;
+    return {
+        refreshToken,
+        ...accessToken,
+        ...response
+    };
 }
 
+const refreshAccessToken = async (token) => {
+
+    if (!token) error("No token sent", 401);
+
+    const refreshToken = await auth.getRefreshToken(token);
+
+    if (!refreshToken) error("No refresh token found", 403);
+
+    const { userId } = await auth.verifyToken(refreshToken, process.env.JWT_REFRESH_SECRET);
+
+    return auth.generateAccessToken(userId);
+}
 
 module.exports = {
     getAllUsers,
     getUserById,
-    createUser
+    createUser,
+    refreshAccessToken
 }

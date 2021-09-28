@@ -1,4 +1,6 @@
 const express = require("express");
+const cors = require("cors");
+var cookieParser = require('cookie-parser');
 const db = require("./config/db");
 const router = require("./routes");
 const errorHandler = require("./middleware/errorHandler");
@@ -10,6 +12,13 @@ db.authenticate()
     .catch(err => console.log('Error: ' + err))
 
 const app = express();
+
+app.use(cors({
+    credentials: true,
+    origin: "http://localhost:5000"
+}));
+
+app.use(cookieParser());
 
 app.use(express.json());
 

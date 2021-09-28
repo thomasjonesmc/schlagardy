@@ -1,5 +1,4 @@
-const { __dev, __error } = require("../util/constants");
-const { formatYupError } = require("../util/error");
+const { __dev } = require("../util/constants");
 
 const errorHandler = (err, req, res, next) => {
 
@@ -10,17 +9,13 @@ const errorHandler = (err, req, res, next) => {
         console.log(`${err.message ?? "UNKNOWN ERROR"}\n`);
     }
 
-    let error = __error;
+    let error = "Unknown Error";
 
-    if (err.name === "ValidationError") {
-        error = formatYupError(err);
-    } else if (err.userCreatedError) {
-        error = err.userCreatedError
+    if (err.userCreated || err.name === "ValidationError") {
+        error = err.message;
     }
 
-    res.status(err.httpStatusCode || 500).json({
-        error
-    });
+    res.status(err.httpStatusCode || 500).json({ error });
 }
 
 module.exports = errorHandler;
