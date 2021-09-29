@@ -13,7 +13,6 @@
 
     let submitting = false;
 
-
     function submit() {
 
         submitting = true;
@@ -30,8 +29,9 @@
         })
             .then(res => res.json())
             .then(res => {
-                console.log(res);
-                $accessToken = res.accessToken;
+                const { accessToken: token, ...rest } = res;
+                $accessToken = token;
+                $user = rest;
             })
             .finally(() => submitting = false)
     }

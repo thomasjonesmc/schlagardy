@@ -38,6 +38,30 @@ const createUser = async (req, res) => {
     return createdUser;
 }
 
+const loginUser = async (req, res) => {
+    const user = req.body;
+
+    await vld.loginUser.validate(user);
+
+    const { refreshToken, ...createdUser } = await serv.loginUser(user);
+
+    res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        maxAge: __day_in_ms * 365 * 5,
+        sameSite: "strict"
+    });
+
+    return createdUser;
+}
+
+const logoutUser = async (req, res) => {
+    const refreshToken = req.cookies?.refreshToken;
+
+    res.clearCookie("refreshToken");
+
+    return serv.logoutUser(refreshToken);
+}
+
 const refreshAccessToken = async (req, res) => {
 
     const refreshToken = req.cookies?.refreshToken;
@@ -50,5 +74,7 @@ module.exports = {
     getUserById,
     getLoggedInUser,
     createUser,
+    loginUser,
+    logoutUser,
     refreshAccessToken
 }

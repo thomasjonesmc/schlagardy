@@ -33,6 +33,12 @@ const getRefreshToken = async (token) => {
     return redis.get(`refresh:${token}`);
 }
 
+// returns 
+const deleteRefreshToken = async (token) => {
+    const success = await redis.del(`refresh:${token}`);
+    return Boolean(success);
+}
+
 const verifyToken = async (token, key) => {
     if(!token) return {};
     return new Promise((resolve,reject) =>
@@ -48,5 +54,6 @@ module.exports = {
     generateRefreshToken,
     setRefreshToken,
     getRefreshToken,
+    deleteRefreshToken,
     verifyToken
 }

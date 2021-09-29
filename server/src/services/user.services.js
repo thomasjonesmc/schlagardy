@@ -2,6 +2,7 @@ const { Op } = require("sequelize");
 const User = require("../models/User");
 const { error } = require("../util/error");
 const auth = require("../util/auth");
+const bcrypt = require("bcrypt");
 
 const getAllUsers = async () => {
     return User.findAll({
@@ -21,15 +22,19 @@ const getUserById = async (id) => {
 
 const createUser = async ({email, username, displayName, password}) => {
     
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(password, salt);
+
     const [ user, created ] = await User.findOrCreate({
         where: {
             [Op.or]: [
-                { email },
-                { username }
+                // ignore case when finding email and username
+                { email: { [Op.iLike]: email } },
+                { username: { [Op.iLike]: username } }
             ]
         },
         defaults: {
-            email, username, displayName, password
+            email, username, displayName, password: hashedPassword
         }
     });
 
@@ -50,6 +55,45 @@ const createUser = async ({email, username, displayName, password}) => {
     };
 }
 
+const loginUser = async ({identifier, password}) => {
+
+    const identifierType = identifier.includes("@") ? "email" : "username";
+
+    const user = await User.findOne({
+        where: {
+            // ignore case for emails, don't ignore case for usernames
+            // this is because emails are case insensitive but we can enforce sensitivity on usernames for more security
+            [identifierType]: identifierType === "email" 
+                ? { [Op.iLike]: identifier }
+                : identifier
+        }
+    });
+
+    if (!user) error("Invalid Credentials", 400);
+    
+    // take the password out of the response so its not visible
+    const { password: foundPassword, ...response } = user.toJSON();
+
+    const passwordsMatch = await bcrypt.compare(password, foundPassword);
+    if (!passwordsMatch) error("Invalid Credentials", 400);
+
+    const accessToken = auth.generateAccessToken(user.id);
+    const refreshToken = auth.generateRefreshToken(user.id);
+
+    auth.setRefreshToken(refreshToken);
+
+    return {
+        refreshToken,
+        ...accessToken,
+        ...response
+    };
+}
+
+const logoutUser = async (token) => {
+    const deleted = await auth.deleteRefreshToken(token);
+    return { deleted };
+}
+
 const refreshAccessToken = async (token) => {
 
     if (!token) error("No token sent", 401);
@@ -67,5 +111,7 @@ module.exports = {
     getAllUsers,
     getUserById,
     createUser,
+    loginUser,
+    logoutUser,
     refreshAccessToken
 }

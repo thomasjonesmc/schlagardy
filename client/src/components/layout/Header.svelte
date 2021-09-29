@@ -1,9 +1,32 @@
 <script>
-    import { current } from "page";
+    
     import { outsideclick } from "../../actions/outsideclick";
+    import { user, accessToken } from "../../stores/user";
 
     let showDropdown = false;
+    let loggingOut = false;
 
+    function logout() {
+        showDropdown = !showDropdown;
+
+        if (!$user && !$accessToken) return;
+
+        loggingOut = true;
+
+        fetch("http://localhost:3000/api/users/logout", {
+            method: "POST",
+            credentials: "include"
+        })
+        .then(res => res.json())
+        .then(res => {
+            console.log(res);
+        })
+        .finally(() => {
+            $user = null;
+            $accessToken = null;
+            loggingOut = false;
+        })
+    }
 </script>
 
 
@@ -28,7 +51,7 @@
                 >
                     <a href="/profile">My Profile</a>
                     <button>Dark Theme</button>
-                    <button>Logout</button>
+                    {#if $user}<button on:click={logout} disable={loggingOut}>Logout</button>{/if}
         
                 </div>
             {/if}

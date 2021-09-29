@@ -1,6 +1,9 @@
 const yup = require("yup");
 require("./reusable");
 
+const password = yup.string().required().min(8).max(250);
+const userId = yup.number().required().positive().integer().label("userId");
+
 const createUser = yup.object({
     username: 
         yup.string()
@@ -18,11 +21,7 @@ const createUser = yup.object({
         .required()
         .min(1)
         .max(50),
-    password: 
-        yup.string()
-        .required()
-        .min(8)
-        .max(250),
+    password,
     passwordCheck: 
         yup.string()
         .label("password check")
@@ -30,9 +29,17 @@ const createUser = yup.object({
         .equalTo(yup.ref("password"))
 });
 
-const userId = yup.number().required().positive().integer().label("userId");
+const loginUser = yup.object({
+    identifier: 
+        yup.string()
+        .required()
+        .min(1),
+    password
+});
+
 
 module.exports = {
     createUser,
+    loginUser,
     userId
 }
