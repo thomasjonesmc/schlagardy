@@ -1,9 +1,13 @@
-import { onMount } from 'svelte';
-import { user, accessToken } from "../stores/user";
+import { onDestroy, onMount } from 'svelte';
+import { user, userHasBeenSet, accessToken } from "../stores/user";
 
 export function refreshUser() {
 
-    let userHasBeenSet = false;
+    let userSetVal;
+
+    let unsubscribe = userHasBeenSet.subscribe(value => {
+        userSetVal = value;
+    })
 
     const refresh = async () => {
 
@@ -14,7 +18,12 @@ export function refreshUser() {
         .then(res => res.json())
         .then(res => {
 
-            if (res.error) user.set(null);
+            if (res.error) {
+                user.set(null);
+                userHasBeenSet.set(true);
+            }
+
+            console.log("Fetched access token", res.accessToken);
 
             // save the access token to a store so we can use it anywhere
             accessToken.set(res.accessToken ?? null);
@@ -22,12 +31,11 @@ export function refreshUser() {
             // keeping calling refresh recursively 1 second before the accessToken expires
             // if the 
             setTimeout(() => {
-                console.log("Refetched access token", res.accessToken);
                 refresh();
             }, (res.expiresIn || 30) * 1000 - 1000);
             
             // only fetch the user if we haven't already set them
-            if (!userHasBeenSet && !res.error) {
+            if (!userSetVal && !res.error) {
                 fetch("http://localhost:3000/api/users/me", {
                     headers: {
                         authorization: `Bearer ${res.accessToken}`
@@ -40,7 +48,7 @@ export function refreshUser() {
                 })
                 .catch(() => user.set(null))
                 .finally(() => {
-                    userHasBeenSet = true;
+                    userHasBeenSet.set(true);
                 });
             }
         })
@@ -49,4 +57,6 @@ export function refreshUser() {
 	onMount(() => {
         refresh();
     });
+
+    onDestroy(unsubscribe);
 }

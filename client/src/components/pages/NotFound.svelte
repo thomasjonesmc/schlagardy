@@ -1,3 +1,7 @@
+<script>
+
+</script>
+
 <div>
     <span>
         404 Not Found
@@ -6,9 +10,8 @@
 
 <style>
     div {
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        display: grid;
+        place-items: center;
         height: 100%;
     }
     

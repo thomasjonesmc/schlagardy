@@ -57,7 +57,10 @@ const loginUser = async (req, res) => {
 const logoutUser = async (req, res) => {
     const refreshToken = req.cookies?.refreshToken;
 
-    res.clearCookie("refreshToken");
+    res.clearCookie("refreshToken", {
+        sameSite: "strict",
+        httpOnly: true
+    });
 
     return serv.logoutUser(refreshToken);
 }

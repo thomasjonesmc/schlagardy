@@ -1,10 +1,12 @@
 <script>
-    
+    import { Link, link, navigate } from "svelte-routing";
     import { outsideclick } from "../../actions/outsideclick";
     import { user, accessToken } from "../../stores/user";
+    import FaUser from 'svelte-icons/fa/FaUser.svelte';
 
     let showDropdown = false;
     let loggingOut = false;
+
 
     function logout() {
         showDropdown = !showDropdown;
@@ -17,14 +19,12 @@
             method: "POST",
             credentials: "include"
         })
-        .then(res => res.json())
-        .then(res => {
-            console.log(res);
-        })
+        .catch(() => null)
         .finally(() => {
             $user = null;
             $accessToken = null;
             loggingOut = false;
+            navigate("/");
         })
     }
 </script>
@@ -33,15 +33,17 @@
 <header>
     <!-- replace with reactive Links when routing implemented -->
     <nav>
-        <a href="/">Home</a>
-        <a href="/login">Login</a>
-        <a href="/register">Register</a>
+        <a use:link href="/">Home</a>
+        {#if !$user}
+            <Link to="/login">Login</Link>
+            <Link to="/register">Register</Link>
+        {/if}
         <div class="profile">
             <button 
                 class="profile-button"
                 on:click={() => showDropdown = !showDropdown}
             >
-                P
+                <FaUser/>
             </button>
             {#if showDropdown}
                 <div 
@@ -49,10 +51,20 @@
                     on:outsideclick={() => showDropdown = false}
                     class="dropdown"
                 >
-                    <a href="/profile">My Profile</a>
+                    {#if $user}
+                        <a use:link href="/profile">My Profile</a >
+                        <div class="profile-info">
+                            <div>{$user.username}</div>
+                            <div>{$user.displayName}</div>
+                            <div>{$user.email}</div>
+                        </div>
+                    {/if}
                     <button>Dark Theme</button>
-                    {#if $user}<button on:click={logout} disable={loggingOut}>Logout</button>{/if}
-        
+                    {#if $user}
+                        <button on:click={logout} disable={loggingOut}>Logout</button>
+                    {:else}
+                        <a use:link href="/login">Login</a >
+                    {/if}
                 </div>
             {/if}
         </div>
@@ -90,9 +102,9 @@
         color: inherit;
         background-color: var(--alt-font-color);
         border-radius: 50%;
-        width: 1em;
-        height: 1em;
-        padding: 1em;
+        width: 2em;
+        height: 2em;
+        padding: .4em;
     }
 
     .dropdown {
@@ -106,6 +118,7 @@
         overflow: hidden;
         width: 175px;
         overflow-y: auto;
+        padding: .5em;
     }
 
     .dropdown > button,
@@ -126,6 +139,16 @@
     .dropdown > a:hover {
         background-color: var(--primary-hover-color);
         color: var(--alt-font-color);
+    }
+
+    .profile-info {
+        font-size: .8rem;
+        display: flex;
+        flex-direction: column;
+        border-top: 1px solid var(--primary-color);
+        border-bottom: 1px solid var(--primary-color);
+        padding: .5em 1em;
+        gap: .5em;
     }
     
 </style>
