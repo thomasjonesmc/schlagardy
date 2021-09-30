@@ -119,6 +119,9 @@
         width: 175px;
         overflow-y: auto;
         padding: .5em;
+        display: flex;
+        flex-direction: column;
+        gap: .3em;
     }
 
     .dropdown > button,
@@ -133,11 +136,12 @@
         display: flex;
         justify-content: flex-start;
         text-decoration: none;
+        border-radius: .25em;
     }
 
     .dropdown > button:hover,
     .dropdown > a:hover {
-        background-color: var(--primary-hover-color);
+        background-color: var(--primary-color);
         color: var(--alt-font-color);
     }
 
