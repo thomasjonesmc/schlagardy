@@ -1,3 +1,7 @@
+<script>
+
+</script>
+
 <div>
     <span>
         404 Not Found
@@ -6,9 +10,8 @@
 
 <style>
     div {
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        display: grid;
+        place-items: center;
         height: 100%;
     }
     
@@ -19,6 +22,5 @@
         border-radius: .5em;
         background-color: var(--primary-color);
         color: var(--alt-font-color);
-        box-shadow: .2em .2em 0 .2em var(--alt-color-light);
     }
 </style>

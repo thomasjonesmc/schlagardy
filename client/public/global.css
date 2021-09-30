@@ -1,6 +1,6 @@
 :root {
-	--primary-color: #00008b;
-	--alt-color-light: #ffcc00;
+	--primary-color: #2a6336;
+	--primary-hover-color: #3434e0;
 	--primary-font-color: black;
 	--alt-font-color: white;
 }
@@ -23,15 +23,24 @@ body {
 }
 
 a {
+	display: inline-block;
 	color: inherit;
 	text-decoration: none;
+	text-align: center;
+	box-sizing: border-box;
+	margin: 0;
 }
 
 a:hover {
 	text-decoration: underline;
 }
 
-button {
+button, .link-button {
+	display: inline-block;
+	font-family: inherit;
+	text-decoration: none;
+	box-sizing: border-box;
+	font-size: 1rem;
 	padding: .5em 1.5em;
 	border: none;
 	border-radius: .3em;
@@ -39,8 +48,17 @@ button {
 	background-color: var(--primary-color);
 	color: var(--alt-font-color);
 	transition: box-shadow .2s ease-in-out;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
 }
 
-button:hover {
-	box-shadow: .13em .13em 0 .13em var(--alt-color-light);
+.link-button:hover {
+	text-decoration: none;
+}
+
+button:disabled {
+	filter: opacity(.6);
+	cursor: not-allowed;
 }

@@ -14,9 +14,9 @@
         display: flex;
         flex-direction: column;
         gap: 1em;
-        padding: 0 2em;
+        padding: 1em;
         max-width: 400px;
-        margin: 1em auto 0 auto;
+        margin: 0 auto;
     }
 
     h1 {
