@@ -4,7 +4,7 @@
 
 <form on:submit|preventDefault>
     {#if title}
-        <h1>{title}</h1>
+        <header>{title}</header>
     {/if}
     <slot></slot>
 </form>
@@ -19,7 +19,9 @@
         margin: 0 auto;
     }
 
-    h1 {
+    header {
+        font-size: 2em;
+        font-weight: bold;
         padding: 0;
         margin: 0;
     }

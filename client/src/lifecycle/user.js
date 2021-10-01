@@ -1,5 +1,6 @@
 import { onDestroy, onMount } from 'svelte';
 import { user, userHasBeenSet, accessToken } from "../stores/user";
+import api from "../api";
 
 export function refreshUser() {
 
@@ -10,53 +11,34 @@ export function refreshUser() {
     })
 
     const refresh = async () => {
+        api.refreshAccessToken()
+            .then(res => {
+                console.log(`Fetched Access Token ${res.accessToken}`);
 
-        fetch("http://localhost:3000/api/users/refresh", {
-            method: "POST",
-            credentials: "include"
-        })
-        .then(res => res.json())
-        .then(res => {
+                accessToken.set(res.accessToken);
 
-            if (res.error) {
+                setTimeout(refresh, res.expiresIn * 1000 - 1000);
+
+                if (!userSetVal) {
+                    api.getMe(res.accessToken)
+                        .then(res => user.set(res))
+                        .catch(() => user.set(null))
+                        .finally(() => userHasBeenSet.set(true));
+                }
+            })
+            .catch(() => {
+                console.log(`Failed to Fetch Access Token `);
+
                 user.set(null);
-                userHasBeenSet.set(true);
-            }
+                accessToken.set(null);
 
-            console.log("Fetched access token", res.accessToken);
-
-            // save the access token to a store so we can use it anywhere
-            accessToken.set(res.accessToken ?? null);
-
-            // keeping calling refresh recursively 1 second before the accessToken expires
-            // if the 
-            setTimeout(() => {
-                refresh();
-            }, (res.expiresIn || 30) * 1000 - 1000);
-            
-            // only fetch the user if we haven't already set them
-            if (!userSetVal && !res.error) {
-                fetch("http://localhost:3000/api/users/me", {
-                    headers: {
-                        authorization: `Bearer ${res.accessToken}`
-                    }
-                })
-                .then(res => res.json())
-                .then(res => {
-                    if (res.error) user.set(null);
-                    else user.set(res);
-                })
-                .catch(() => user.set(null))
-                .finally(() => {
-                    userHasBeenSet.set(true);
-                });
-            }
-        })
+                // try again in 30 seconds on an error
+                setTimeout(refresh, 30 * 1000 - 1000);
+            })
+            .finally(() => userHasBeenSet.set(true));
     }
 
-	onMount(() => {
-        refresh();
-    });
+	onMount(refresh);
 
     onDestroy(unsubscribe);
 }

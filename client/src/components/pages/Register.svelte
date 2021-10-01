@@ -6,6 +6,7 @@
     import PasswordInput from "../reusable/PasswordInput.svelte";
     import EmailInput from "../reusable/EmailInput.svelte";
     import { onMount } from "svelte";
+    import api from "../../api";
 
     onMount(() => {
         if ($user) navigate("/"); 
@@ -32,26 +33,15 @@
 
         submitting = true;
 
-        fetch("http://localhost:3000/api/users/register", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(values),
-            credentials: "include"
+        api.registerUser(values)
+        .then(({ accessToken: token, ...rest }) => {
+            $accessToken = token;
+            $user = rest;
+            error = null;
+            navigate("/");
         })
-            .then(res => res.json())
-            .then(res => {
-                if (res.error) {
-                    return error = res.error;
-                }
-                const { accessToken: token, ...rest } = res;
-                $accessToken = token;
-                $user = rest;
-                error = null;
-                navigate("/");
-            })
-            .finally(() => submitting = false)
+        .catch(err => error = err)
+        .finally(() => submitting = false);
     }
 </script>
 
