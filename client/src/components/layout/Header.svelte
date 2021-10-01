@@ -3,10 +3,10 @@
     import { outsideclick } from "../../actions/outsideclick";
     import { user, accessToken } from "../../stores/user";
     import FaUser from 'svelte-icons/fa/FaUser.svelte';
+    import api from "../../api";
 
     let showDropdown = false;
     let loggingOut = false;
-
 
     function logout() {
         showDropdown = !showDropdown;
@@ -15,11 +15,7 @@
 
         loggingOut = true;
 
-        fetch("http://localhost:3000/api/users/logout", {
-            method: "POST",
-            credentials: "include"
-        })
-        .catch(() => null)
+        api.logoutUser()
         .finally(() => {
             $user = null;
             $accessToken = null;
