@@ -32,8 +32,8 @@
     p {
         text-align: center;
         padding: .5em;
-        border-top: 2px solid var(--primary-color);
-        border-bottom: 2px solid var(--primary-color);
+        border-top: 2px solid var(--accent-color);
+        border-bottom: 2px solid var(--accent-color);
     }
 
     section {

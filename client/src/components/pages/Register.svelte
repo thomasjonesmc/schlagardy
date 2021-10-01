@@ -63,7 +63,7 @@
     }
 
     a {
-        color: var(--primary-color);
+        color: var(--primary-font-color);
         font-size: .8em;
     }
 
