@@ -2,6 +2,8 @@
 	import { Router, Route } from "svelte-routing";
 	import { refreshUser } from "./lifecycle/user";
 	import { userHasBeenSet } from "./stores/user"; 
+	import { onMount } from "svelte";
+	import { setCurrentTheme } from "./util/theme";
 	import Footer from "./components/layout/Footer.svelte";
 	import Header from "./components/layout/Header.svelte";
 	import Create from "./components/pages/Create.svelte";
@@ -11,6 +13,8 @@
 	import Register from "./components/pages/Register.svelte";
 
 	refreshUser();
+
+	onMount(setCurrentTheme);
 </script>
 
 {#if $userHasBeenSet}

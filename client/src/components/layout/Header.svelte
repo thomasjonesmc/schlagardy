@@ -4,6 +4,7 @@
     import { user, accessToken } from "../../stores/user";
     import FaUser from 'svelte-icons/fa/FaUser.svelte';
     import api from "../../api";
+    import { toggleTheme } from "../../util/theme";
 
     let showDropdown = false;
     let loggingOut = false;
@@ -55,7 +56,7 @@
                             <div>{$user.email}</div>
                         </div>
                     {/if}
-                    <button>Dark Theme</button>
+                    <button on:click={toggleTheme}>Toggle Theme</button>
                     {#if $user}
                         <button on:click={logout} disable={loggingOut}>Logout</button>
                     {:else}
@@ -69,7 +70,7 @@
 
 <style>
     header {
-        background-color: var(--primary-color);
+        background-color: var(--accent-color);
         color: var(--alt-font-color);
         position: sticky;
         top: 0;
@@ -90,7 +91,7 @@
     }
 
     .profile {
-        color: var(--primary-color);
+        color: var(--accent-color);
         position: relative;
     }
     
@@ -104,12 +105,13 @@
     }
 
     .dropdown {
-        background-color: var(--alt-font-color);
+        background-color: var(--primary-color);
+        color: var(--primary-font-color);
+        box-shadow: 0px 0px 3px 0px var(--accent-color);
         position: absolute;
         right: 0;
         margin-right: 1em;
         top: 100%;
-        box-shadow: 0px 0px 3px 0px var(--primary-color);
         border-radius: .5em;
         overflow: hidden;
         width: 175px;
@@ -137,7 +139,7 @@
 
     .dropdown > button:hover,
     .dropdown > a:hover {
-        background-color: var(--primary-color);
+        background-color: var(--accent-color);
         color: var(--alt-font-color);
     }
 
@@ -145,8 +147,8 @@
         font-size: .8rem;
         display: flex;
         flex-direction: column;
-        border-top: 1px solid var(--primary-color);
-        border-bottom: 1px solid var(--primary-color);
+        border-top: 1px solid var(--accent-color);
+        border-bottom: 1px solid var(--accent-color);
         padding: .5em 1em;
         gap: .5em;
     }

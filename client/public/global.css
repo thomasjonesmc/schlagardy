@@ -1,6 +1,6 @@
 :root {
-	--primary-color: #2a6336;
-	--primary-hover-color: #3434e0;
+	--accent-color: #2a6336;
+	--primary-color: white;
 	--primary-font-color: black;
 	--alt-font-color: white;
 }
@@ -16,6 +16,8 @@ html {
 
 body {
 	display: flex;
+	background-color: var(--primary-color);
+	color: var(--primary-font-color);
 	flex-direction: column;
 	height: 100%;
 	box-sizing: border-box;
@@ -45,7 +47,7 @@ button, .link-button {
 	border: none;
 	border-radius: .3em;
 	cursor: pointer;
-	background-color: var(--primary-color);
+	background-color: var(--accent-color);
 	color: var(--alt-font-color);
 	transition: box-shadow .2s ease-in-out;
 	display: flex;

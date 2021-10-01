@@ -17,6 +17,7 @@
         padding: 1em;
         max-width: 400px;
         margin: 0 auto;
+        color: var(--primary-font-color);
     }
 
     header {
