@@ -11,35 +11,18 @@
         const res = await fetch("/api");
         const { name, age } = await res.json();
 
-        console.log(name, age);
-
         return {
             props: {
                 name,
                 age
             }
         }
-
-        // if (!session.user) {
-        //     return { props: { lists: [] } };
-        // }
-
-        // const url = `/api/movie/list`;
-        // const res = await fetch(url);
-        // const { lists } = await res.json();
-
-        // if (res.ok) {
-        //     return { props: { lists } };
-        // }
-
-        // return {
-        //     status: res.status,
-        //     error: new Error(`Could not load ${url}`)
-        // };
     }
 </script>
 
 <script>
+    import { session } from "$app/stores";
+
     let count = 0;
     export let name;
     export let age;
@@ -51,6 +34,10 @@
 
 <p>Name: {name}</p>
 <p>Age: {age}</p>
+
+{#if $session.user}
+    <p>User: {$session.user.email}</p>
+{/if}
 
 <button on:click={() => count++}>
     Click Me! {count}

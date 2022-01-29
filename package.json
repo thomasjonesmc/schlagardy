@@ -28,5 +28,8 @@
     "typescript": "^4.4.3",
     "@supabase/supabase-js": "^1.8.0"
   },
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "cookie": "^0.4.1"
+  }
 }
