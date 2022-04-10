@@ -1,6 +1,6 @@
-<script>
-    import css from "../app.css";
-import Footer from "./_Footer.svelte";
+<script lang="ts">
+    import "../app.css";
+    import Footer from "./_Footer.svelte";
     import Header from "./_Header.svelte";
 </script>
 

@@ -1,11 +1,28 @@
-<script>
-import { session } from "$app/stores";
+<script lang="ts">
+    import { goto } from "$app/navigation";
 
+    import { session } from "$app/stores";
+    import LinkButton from "$lib/components/Buttons/LinkButton.svelte";
+    import { get } from "$lib/util";
+
+    let signingOut = false;
+
+    async function signOut() {
+        signingOut = true;
+        await get("auth/signout");
+        $session.user = null;
+        signingOut = false;
+
+        goto("/");
+    }
 </script>
+
 <header>
     <a href="/">Home</a>
     {#if $session.user}
-        <a href="/signout">Sign Out</a>
+        <LinkButton on:click={signOut} disabled={signingOut}>
+            Sign Out
+        </LinkButton>
         <a href="/profile">Profile</a>
     {:else}
         <a href="/signup">Sign Up</a>
@@ -17,7 +34,7 @@ import { session } from "$app/stores";
     header {
         display: flex;
         justify-content: flex-end;
-        gap: .75em;
+        gap: 0.75em;
         align-items: center;
         background-color: salmon;
         padding: 1em;
@@ -27,4 +44,3 @@ import { session } from "$app/stores";
         margin-right: auto;
     }
 </style>
-

@@ -1,14 +1,13 @@
 <script lang="ts">
     import { session } from '$app/stores';
     import ButtonLink from '$lib/components/Buttons/ButtonLink.svelte';
-    import { debug } from 'svelte/internal';
 
 </script>
 
 <div id="index">
     {#if $session.user}
         <!-- <h1>Welcome, {session.user.displayName}</h1> -->
-        <h1>Hello, {$session.user.email}</h1>
+        <h1>Hello, {$session.user.displayName}</h1>
     {:else}
         <h1>Welcome to Schlagardy</h1>
     {/if}
@@ -19,8 +18,11 @@
 </div>
 
 <style>
-    #index {
+    h1 {
         text-align: center;
+    }
+
+    #index {
         padding: 1em;
     }
 

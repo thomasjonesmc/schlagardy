@@ -1,4 +1,4 @@
-export function post(endpoint: string, data: unknown) {
+export async function post(endpoint: string, data: unknown) {
 	return fetch(endpoint, {
 		method: 'POST',
 		credentials: 'include',
@@ -6,6 +6,13 @@ export function post(endpoint: string, data: unknown) {
 		headers: {
 			'Content-Type': 'application/json'
 		}
+	}).then((r) => r.json());
+}
+
+export async function get(endpoint: string) {
+	return fetch(endpoint, {
+		method: 'GET',
+		credentials: 'include'
 	}).then((r) => r.json());
 }
 
@@ -25,4 +32,10 @@ export function dateTime(dateString: string): string {
 		hour: "numeric",
 		minute: "2-digit"
 	});
+}
+
+export function capitalize(str: string): string {
+	const [ first, ...rest ] = str;
+
+	return first.toUpperCase() + rest.join("");
 }

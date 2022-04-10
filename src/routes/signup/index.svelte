@@ -16,6 +16,11 @@
     import { session } from "$app/stores";
     import { post } from "$lib/util";
     import SubmitButton from "$lib/components/Buttons/SubmitButton.svelte";
+    import Form from "$lib/components/Form/Form.svelte";
+    import InputRow from "$lib/components/Form/InputRow.svelte";
+    import EmailRow from "$lib/components/Form/EmailRow.svelte";
+    import PasswordRow from "$lib/components/Form/PasswordRow.svelte";
+    import User from "$lib/models/user.model";
 
     let submitting = false;
 
@@ -35,16 +40,15 @@
         }
 
         submitting = true;
-        
-        console.log("START");
 
         const { user, message } = await post("auth/signup", newUser);
-
-        console.log("STOP");
         
-        if (message) return error = message;
+        if (message) {
+            submitting = false;
+            return error = message;
+        }
 
-        $session.user = user;
+        $session.user = new User(user);
         
         submitting = false;
         goto("/");
@@ -52,50 +56,17 @@
 </script>
 
 
-<form on:submit|preventDefault={signUp}>
-    <h1>Sign Up</h1>
-
-    <div>
-        <label for="email">Email</label>
-        <input type="email" id="email" bind:value={newUser.email} />
-    </div>
-
-    <div>
-        <label for="password">Password</label>
-        <input type="password" id="password" bind:value={newUser.password} />
-    </div>
-
-    <div>
-        <label for="username">Username</label>
-        <input id="username" bind:value={newUser.username} />
-    </div>
-
-    <div>
-        <label for="displayName">Display Name</label>
-        <input id="displayName" bind:value={newUser.displayName} />
-    </div>
+<Form on:submit={signUp} title="Sign Up">
+    <EmailRow bind:value={newUser.email} />
+    <PasswordRow bind:value={newUser.password} />
+    <InputRow id="username" bind:value={newUser.username} />
+    <InputRow id="display-name" bind:value={newUser.username} />
 
     {#if error}
         <div style="color: red;">{error}</div>
     {/if}
 
     <SubmitButton disabled={submitting}>Submit</SubmitButton>
-</form>
+</Form>
 
-<style>
-    h1 {
-        text-align: center;
-    }
-
-    form {
-        display: grid;
-        gap: 1em;
-        margin: 0 auto;
-        max-width: 400px;
-        padding: 1em;
-    }
-
-    form div {
-        display: grid;
-    }
-</style>
+<!-- <pre>{JSON.stringify(newUser, null, 4)}</pre> -->

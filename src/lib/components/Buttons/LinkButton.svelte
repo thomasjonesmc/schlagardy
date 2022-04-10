@@ -2,7 +2,7 @@
     export let style: string = '';
     export let type: string = 'button';
     export let disabled: boolean = false;
-    export let cssClass: string;
+    export let cssClass: string = '';
 </script>
 
 <button on:click class={cssClass} {type} {disabled} {style}>
@@ -11,13 +11,13 @@
 
 <style>
     button {
-        text-decoration: none;
+        padding: 0;
+        margin: 0;
+        text-decoration: underline;
         font-size: inherit;
         color: inherit;
-        background-color: white;
-        border: 1px solid gray;
-        padding: 0.25em 0.5em;
-        border-radius: 0.25em;
+        background-color: inherit;
+        border: none;
     }
 
     .submit {

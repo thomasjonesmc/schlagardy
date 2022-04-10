@@ -16,6 +16,10 @@
     import { session } from "$app/stores";
     import { post } from "$lib/util";
     import SubmitButton from "$lib/components/Buttons/SubmitButton.svelte";
+    import Form from "$lib/components/Form/Form.svelte";
+    import EmailRow from "$lib/components/Form/EmailRow.svelte";
+    import PasswordRow from "$lib/components/Form/PasswordRow.svelte";
+    import User from "$lib/models/user.model";
 
     let submitting = false;
     let email = "";
@@ -32,48 +36,20 @@
         
         if (message) return error = message;
 
-        $session.user = user;
+        $session.user = new User(user);
         
         submitting = false;
         goto("/");
     }
 </script>
 
-
-<form on:submit|preventDefault={signIn}>
-    <h1>Sign In</h1>
-
-    <div>
-        <label for="email">Email</label>
-        <input type="email" id="email" bind:value={email} />
-    </div>
-
-    <div>
-        <label for="password">Password</label>
-        <input type="password" id="password" bind:value={password} />
-    </div>
+<Form on:submit={signIn} title="Sign In">
+    <EmailRow bind:value={email} />
+    <PasswordRow bind:value={password} />
 
     {#if error}
         <div style="color: red;">{error}</div>
     {/if}
 
     <SubmitButton disabled={submitting}>Submit</SubmitButton>
-</form>
-
-<style>
-    h1 {
-        text-align: center;
-    }
-
-    form {
-        display: grid;
-        gap: 1em;
-        margin: 0 auto;
-        max-width: 400px;
-        padding: 1em;
-    }
-
-    form div {
-        display: grid;
-    }
-</style>
+</Form>

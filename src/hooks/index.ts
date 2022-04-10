@@ -1,3 +1,4 @@
+import User from '$lib/models/user.model';
 import * as cookie from 'cookie';
 
 export async function handle({ event, resolve }) {
@@ -11,7 +12,11 @@ export async function handle({ event, resolve }) {
 }
 
 export function getSession({ locals }) {
+
+	let user: User = null;
+	if (locals.user) user = new User(locals.user);
+
 	return {
-		user: locals.user && { ...locals.user }
+		user: user?.toPOJO()
 	};
 }

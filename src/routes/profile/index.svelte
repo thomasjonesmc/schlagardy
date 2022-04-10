@@ -1,8 +1,11 @@
 <script lang="ts" context="module">
-import { session } from "$app/stores";
-import { date, dateTime } from "$lib/util";
+    import { session } from "$app/stores";
+    import { dateTime } from "$lib/util";
+    import ProfileRow from "./_ProfileRow.svelte";
 
     export function load({ session }) {
+        console.log("load called");
+
 		if (!session.user) {
 			return {
 				status: 302,
@@ -18,22 +21,17 @@ import { date, dateTime } from "$lib/util";
     <div id="profile-container">
         <h1>Profile</h1>
         
-        <div>
-            <b>Email</b>
-            <p>{$session.user.email}</p>
-        </div>
-        
-        <div>
-            <b>Last Sign In</b>
-            <p>{dateTime($session.user.last_sign_in_at)}</p>
-        </div>
-        
-        <div>
-            <b>Account Created At</b>
-            <p>{dateTime($session.user.created_at)}</p>
-        </div>
+        <ProfileRow label="Email" value={$session.user.email} />
+        <ProfileRow label="Username" value={$session.user.username} />
+        <ProfileRow label="Display Name" value={$session.user.displayName} />
+        <ProfileRow label="Last Sign In" value={dateTime($session.user.last_sign_in_at)} />
+        <ProfileRow label="Account Created At" value={dateTime($session.user.created_at)} />
     </div>
 </div>
+
+<pre>
+    {JSON.stringify($session.user, null, 4)}
+</pre>
 
 <style>
     #profile {
@@ -51,20 +49,7 @@ import { date, dateTime } from "$lib/util";
         padding: .25em .3em;
     }
 
-    #profile-container > div {
-        display: flex;
-        justify-content: space-between;
-        border-top: 1px solid lightgray;
-        padding: 1em .75em;
-    }
-
-    p {
-        color: rgb(58, 58, 58);
-    }
-
-    @media screen and (max-width: 550px) {
-        #profile div {
-            display: block;
-        }
+    pre {
+        display: block;
     }
 </style>
