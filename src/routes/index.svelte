@@ -21,11 +21,7 @@
     h1 {
         text-align: center;
     }
-
-    #index {
-        padding: 1em;
-    }
-
+    
     #options {
         display: flex;
         justify-content: center;

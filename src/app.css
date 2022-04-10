@@ -39,10 +39,6 @@ body {
     min-height: 100%;
 }
 
-main {
-    height: 100%;
-    flex: 1;
-}
 
 /*
     6. Improve media defaults

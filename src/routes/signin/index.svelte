@@ -26,6 +26,8 @@
     let password = "";
     let error = null;
 
+    const route = $page.url.searchParams.get("goto") || "/";
+
     async function signIn() {
         
         if (!email || !password) return;
@@ -39,7 +41,7 @@
         $session.user = new User(user);
         
         submitting = false;
-        goto("/");
+        goto(route);
     }
 </script>
 

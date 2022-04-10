@@ -23,6 +23,5 @@
         gap: 1em;
         margin: 0 auto;
         max-width: 400px;
-        padding: 1em;
     }
 </style>
