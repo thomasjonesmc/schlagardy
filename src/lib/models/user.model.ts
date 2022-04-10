@@ -8,6 +8,7 @@ export default class User {
     updated_at: string;
     displayName: string;
     username: string;
+    public: boolean;
 
     constructor(su: SupabaseUser) {
         this.id = su.id;
@@ -19,6 +20,7 @@ export default class User {
         this.created_at = su.created_at;
         this.last_sign_in_at = su.last_sign_in_at;
         this.updated_at = su.updated_at;
+        this.public = su.user_metadata.public;
     }
 
     toJSON(): string {
@@ -41,7 +43,8 @@ export type SupabaseUser = {
     last_sign_in_at: string,
     user_metadata: {
         displayName: string,
-        username: string
+        username: string,
+        public: boolean,
     },
     created_at: string,
     updated_at: string

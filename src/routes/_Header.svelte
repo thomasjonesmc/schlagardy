@@ -3,13 +3,13 @@
 
     import { session } from "$app/stores";
     import LinkButton from "$lib/components/Buttons/LinkButton.svelte";
-    import { get } from "$lib/util";
+    import { post } from "$lib/util";
 
     let signingOut = false;
 
     async function signOut() {
         signingOut = true;
-        await get("auth/signout");
+        await post("auth/signout");
         $session.user = null;
         signingOut = false;
 

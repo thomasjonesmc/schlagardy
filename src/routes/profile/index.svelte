@@ -27,6 +27,7 @@
             <ProfileRow label="Display Name" value={$session.user.displayName} />
             <ProfileRow label="Last Sign In" value={dateTime($session.user.last_sign_in_at)} />
             <ProfileRow label="Account Created At" value={dateTime($session.user.created_at)} />
+            <ProfileRow label="Account is Public" value={(String)(!!$session.user.public)} />
         </div>
     </div>
 {/if}
@@ -49,9 +50,5 @@
 
     h1 {
         padding: .25em .3em;
-    }
-
-    pre {
-        display: block;
     }
 </style>

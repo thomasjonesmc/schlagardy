@@ -13,7 +13,7 @@
 
 <script>
     import { goto } from "$app/navigation";
-    import { session } from "$app/stores";
+    import { page, session } from "$app/stores";
     import { post } from "$lib/util";
     import SubmitButton from "$lib/components/Buttons/SubmitButton.svelte";
     import Form from "$lib/components/Form/Form.svelte";

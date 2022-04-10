@@ -1,7 +1,6 @@
 import supabase from "$lib/db";
 
-export async function get() {
-
+export async function post() {
 	await supabase.auth.signOut();
 
 	return {

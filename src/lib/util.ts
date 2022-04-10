@@ -1,8 +1,8 @@
-export async function post(endpoint: string, data: unknown) {
+export async function post(endpoint: string, data: unknown = {}) {
 	return fetch(endpoint, {
 		method: 'POST',
 		credentials: 'include',
-		body: JSON.stringify(data || {}),
+		body: JSON.stringify(data),
 		headers: {
 			'Content-Type': 'application/json'
 		}

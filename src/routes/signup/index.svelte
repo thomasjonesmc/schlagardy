@@ -21,6 +21,7 @@
     import EmailRow from "$lib/components/Form/EmailRow.svelte";
     import PasswordRow from "$lib/components/Form/PasswordRow.svelte";
     import User from "$lib/models/user.model";
+import CheckBoxRow from "$lib/components/Form/CheckBoxRow.svelte";
 
     let submitting = false;
 
@@ -28,7 +29,8 @@
         email: "",
         password: "",
         displayName: "",
-        username: ""
+        username: "",
+        public: false
     }
 
     let error = null;
@@ -60,7 +62,8 @@
     <EmailRow bind:value={newUser.email} />
     <PasswordRow bind:value={newUser.password} />
     <InputRow id="username" bind:value={newUser.username} />
-    <InputRow id="display-name" bind:value={newUser.username} />
+    <InputRow id="display-name" bind:value={newUser.displayName} />
+    <CheckBoxRow id="make-account-public" bind:checked={newUser.public} />
 
     {#if error}
         <div style="color: red;">{error}</div>
