@@ -12,8 +12,8 @@
 </script>
 
 <script lang="ts">
-import { goto } from "$app/navigation";
-import { session } from "$app/stores";
+	import { goto } from "$app/navigation";
+	import { session } from "$app/stores";
 
 	import SubmitButton from "$lib/components/Buttons/SubmitButton.svelte";
 	import CheckBoxRow from "$lib/components/Form/CheckBoxRow.svelte";
@@ -26,7 +26,8 @@ import { session } from "$app/stores";
 	let jeopardy = {
 		title: '',
 		description: '',
-		public: true
+		public: true,
+		userId: $session.user.id
 	}
 
 	let error = null;
@@ -37,17 +38,17 @@ import { session } from "$app/stores";
 
 		submitting = true;
 
-		const createdGame: Game = await post("/api/schlagardy", jeopardy);
+		const createdGame: Game = await post("/api/game", jeopardy);
 
 		$session.game = createdGame;
 
-		goto(`/schlagardy/${createdGame.id}`)
+		goto(`/game/${createdGame.id}`)
 
 		submitting = false;
 	}
 </script>
 
-<Form on:submit={onSubmit} title="Create New Schlagardy">
+<Form on:submit={onSubmit} title="Create New Game">
 	<InputRow id="title" bind:value={jeopardy.title} />
 	<TextAreaRow id="description" bind:value={jeopardy.description} />
 	<CheckBoxRow id="public" bind:checked={jeopardy.public} />

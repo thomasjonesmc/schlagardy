@@ -14,6 +14,7 @@
     <div id="options">
         <ButtonLink href="/create">Create Game</ButtonLink>
         <ButtonLink href="/join">Join Game</ButtonLink>
+        <ButtonLink href="/browse">Browse</ButtonLink>
     </div>
 </div>
 

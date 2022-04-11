@@ -1,4 +1,4 @@
-export default class game {
+export default class Game {
 
     id: number;
     created_at: string;
@@ -10,7 +10,7 @@ export default class game {
     image_url: string;
     updated_at: string;
     rounds: Array<Round>;
-            
+
 }
 
 export class Round {
@@ -19,17 +19,45 @@ export class Round {
     jeopardy_id: string;
     created_at: string;
     updated_at: string;
-    board: {
-        categories: Array<Category>;
+    ordinal: number;
+    board: Board;
+}
+
+export class Board {
+    constructor(rows: number, cols: number) {
+        this.categories = [];
+
+        for (let i = 0; i < cols; i++) {
+            this.categories[i] = new Category(rows);
+        }
     }
+
+    categories: Array<Category>;
 }
 
 export class Category {
+
+    constructor(cells: number, category: string='') {
+        this.category = category;
+        this.cells = [];
+
+        for (let i = 0; i < cells; i++) {
+            this.cells[i] = new Cell();
+        }
+    }
+
     category: string;
     cells: Array<Cell>;
 }
 
 export class Cell {
+
+    constructor(question: string='', answer: string='', isDailyDouble=false) {
+        this.question = question;
+        this.answer = answer;
+        this.isDailyDouble = isDailyDouble;
+    }
+
     question: string;
     answer: string;
     isDailyDouble: boolean;
