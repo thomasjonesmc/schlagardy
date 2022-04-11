@@ -2,7 +2,7 @@
     export let style: string = '';
     export let type: string = 'button';
     export let disabled: boolean = false;
-    export let cssClass: string;
+    export let cssClass: string = undefined;
 </script>
 
 <button on:click class={cssClass} {type} {disabled} {style}>

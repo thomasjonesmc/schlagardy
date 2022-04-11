@@ -9,7 +9,7 @@
 
     async function signOut() {
         signingOut = true;
-        await post("auth/signout");
+        await post("/api/auth/signout");
         $session.user = null;
         signingOut = false;
 

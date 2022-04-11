@@ -1,5 +1,6 @@
 /// <reference types="@sveltejs/kit" />
 
+import type Game from "$lib/models/game.model";
 import type User from "$lib/models/user.model";
 
 // See https://kit.svelte.dev/docs/types#the-app-namespace
@@ -11,7 +12,8 @@ declare global {
 		// interface Locals {}
 		// interface Platform {}
 		interface Session {
-			user: User
+			user: User,
+			game: Game
 		}
 		// interface Stuff {}
 	}

@@ -34,7 +34,7 @@
 
         submitting = true;
         
-        const { user, message } = await post("auth/signin", { email, password });
+        const { user, message } = await post("/api/auth/signin", { email, password });
         
         if (message) return error = message;
 

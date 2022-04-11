@@ -43,7 +43,7 @@
 
         submitting = true;
 
-        const { user, message } = await post("auth/signup", newUser);
+        const { user, message } = await post("/api/auth/signup", newUser);
         
         if (message) {
             submitting = false;

@@ -11,12 +11,54 @@
 	}
 </script>
 
-<div>
-	Hello
-</div>
+<script lang="ts">
+import { goto } from "$app/navigation";
+import { session } from "$app/stores";
+
+	import SubmitButton from "$lib/components/Buttons/SubmitButton.svelte";
+	import CheckBoxRow from "$lib/components/Form/CheckBoxRow.svelte";
+	import Form from "$lib/components/Form/Form.svelte";
+	import InputRow from "$lib/components/Form/InputRow.svelte";
+	import TextAreaRow from "$lib/components/Form/TextAreaRow.svelte";
+	import type Game from "$lib/models/game.model";
+	import { post } from "$lib/util";
+
+	let jeopardy = {
+		title: '',
+		description: '',
+		public: true
+	}
+
+	let error = null;
+	let submitting = false;
+
+	async function onSubmit() {
+		if (!jeopardy.title) return error = "Title is required";
+
+		submitting = true;
+
+		const createdGame: Game = await post("/api/schlagardy", jeopardy);
+
+		$session.game = createdGame;
+
+		goto(`/schlagardy/${createdGame.id}`)
+
+		submitting = false;
+	}
+</script>
+
+<Form on:submit={onSubmit} title="Create New Schlagardy">
+	<InputRow id="title" bind:value={jeopardy.title} />
+	<TextAreaRow id="description" bind:value={jeopardy.description} />
+	<CheckBoxRow id="public" bind:checked={jeopardy.public} />
+
+	{#if error}
+		<div style="color: red;">{error}</div>
+	{/if}
+
+	<SubmitButton disabled={submitting}>Submit</SubmitButton>
+</Form>
 
 <style>
-	div {
-		background-color: green;
-	}
+
 </style>
