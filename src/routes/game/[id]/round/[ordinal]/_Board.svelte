@@ -1,10 +1,10 @@
 <script lang="ts">
     import { session } from "$app/stores";
     import Button from "$lib/components/Buttons/Button.svelte";
-import SubmitButton from "$lib/components/Buttons/SubmitButton.svelte";
-import CheckBoxRow from "$lib/components/Form/CheckBoxRow.svelte";
-import Form from "$lib/components/Form/Form.svelte";
-import InputRow from "$lib/components/Form/InputRow.svelte";
+    import SubmitButton from "$lib/components/Buttons/SubmitButton.svelte";
+    import CheckBoxRow from "$lib/components/Form/CheckBoxRow.svelte";
+    import Form from "$lib/components/Form/Form.svelte";
+    import InputRow from "$lib/components/Form/InputRow.svelte";
     import { Board, Cell } from "$lib/models/game.model";
     import { clear_loops } from "svelte/internal";
 
@@ -48,7 +48,11 @@ import InputRow from "$lib/components/Form/InputRow.svelte";
         </div>
         {#each cat.cells as cell, j}
             <button on:click={() => openCell(cell, j, i)} class="cell">
-                {j * increment + startVal}
+                {#if cell.question}
+                    <p>{cell.question}</p>
+                {:else}
+                    {j * increment + startVal}
+                {/if}
             </button>
         {/each}
     {/each}
@@ -99,6 +103,7 @@ import InputRow from "$lib/components/Form/InputRow.svelte";
         border: none;
         width: 100%;
         height: 100%;
+        text-align: center;
     }
 
     .cell {
@@ -108,6 +113,13 @@ import InputRow from "$lib/components/Form/InputRow.svelte";
         text-align: center;
         color: gray;
         border: none;
+    }
+
+    .cell p {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;  
+        overflow: hidden;
     }
 
     .cell:hover {

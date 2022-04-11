@@ -3,30 +3,51 @@
 
     export async function load({ session, fetch, params }) {
 
-		if (!session.user) return { status: 302,redirect: `/`};
+		if (!session.user) return { status: 302, redirect: `/`};
+
+		let ordinal = parseInt(params.ordinal);
+
+		if (isNaN(ordinal)) {
+			session.game = null;
+			return {};
+		}
 
 		if (!session.game) {
 			const response = await fetch(`/api/game/${params.id}`);
 			session.game = response.ok && (await response.json());
 		}
 
-		const roundExists = session.game.rounds.findIndex((r: Round) => r.ordinal === parseInt(params.ordinal)) >= 0;
+		const roundExists = session.game.rounds.findIndex((r: Round) => r.ordinal === ordinal) >= 0;
 
-		// create round if it doesn;t already exist
+		// create round if it doesn't already exist
 		if (!roundExists) {
+
+			// order new round at very end
+			const newOrdinal = session.game.rounds.length + 1;
+
+			// insert the game
 			const response = await fetch(`/api/game/${params.id}/round`, {
 				method: "POST",
-				body: JSON.stringify({ title: "", ordinal: params.ordinal })
+				body: JSON.stringify({ title: "", ordinal: newOrdinal })
 			});
 
-			if (response.ok) {
-				session.game.rounds = await response.json()
+			// //
+			// if (response.ok) {
+			// 	session.game.rounds = await response.json();
+			// }
+
+			// redirect to the new ordinal if it doesn't match url ordinal
+			if (newOrdinal !== ordinal) {
+				return {
+					status: 302,
+					redirect: `/game/${params.id}/round/${newOrdinal}`
+				}
 			}
 		}
 
 		return {
 			props: {
-				ordinal: parseInt(params.ordinal)
+				ordinal
 			}
 		};
 	}
@@ -35,11 +56,11 @@
 <script lang="ts">
 	import { session } from "$app/stores";	
 	import Board from "./_Board.svelte";
+
 	export let ordinal: number;
 
 	let game = $session.game;
-
-	let roundIndex = $session.game.rounds.findIndex(r => r.ordinal === ordinal);
+	let roundIndex = game?.rounds.findIndex(r => r.ordinal === ordinal);
 </script>
 
 {#if !game}
@@ -52,7 +73,7 @@
 		<div id="input-container">
 			<input type="text" placeholder="Round Title" bind:value={game.rounds[roundIndex].title} />
 		</div>
-		<Board />
+		<Board bind:board={game.rounds[roundIndex].board} />
 	</div>
 {/if}
 
