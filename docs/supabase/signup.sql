@@ -15,16 +15,20 @@ language plpgsql
 security definer set search_path = public
 as $$
 begin
-  insert into public.profiles (id, username, display_name)
+  insert into public.profiles (id, username, display_name, is_public, email, created_at, last_sign_in_at)
   values (
-        new.id,
-        new.raw_user_meta_data ->> 'username',
-        new.raw_user_meta_data ->> 'displayName'
-    );
+    new.id,
+    new.raw_user_meta_data ->> 'username',
+    new.raw_user_meta_data ->> 'displayName',
+    (new.raw_user_meta_data ->> 'isPublic')::boolean,
+    new.email,
+    new.created_at,
+    new.last_sign_in_at
+  );
+
   return new;
 end;
 $$;
-
 
 -- trigger the function every time a user is created
 create trigger on_auth_user_created

@@ -1,26 +1,22 @@
 export default class User {
     id: string;
     email: string;
-    phone: string;
-    confirmed_at: string;
-    last_sign_in_at: string;
-    created_at: string;
-    updated_at: string;
+    confirmedAt: string;
+    lastSignInAt: string;
+    createdAt: string;
+    updatedAt: string;
     displayName: string;
     username: string;
-    public: boolean;
+    isPublic: boolean;
 
-    constructor(su: SupabaseUser) {
-        this.id = su.id;
-        this.email = su.email;
-        this.phone = su.phone;
-        this.username = su.user_metadata.username;
-        this.displayName = su.user_metadata.displayName;
-        this.confirmed_at = su.confirmed_at;
-        this.created_at = su.created_at;
-        this.last_sign_in_at = su.last_sign_in_at;
-        this.updated_at = su.updated_at;
-        this.public = su.user_metadata.public;
+    constructor(sp: SupabaseProfile) {
+        this.id = sp.id;
+        this.email = sp.email;
+        this.username = sp.username;
+        this.displayName = sp.display_name;
+        this.createdAt = sp.created_at;
+        this.lastSignInAt = sp.last_sign_in_at;
+        this.isPublic = sp.is_public;
     }
 
     toJSON(): string {
@@ -44,8 +40,19 @@ export type SupabaseUser = {
     user_metadata: {
         displayName: string,
         username: string,
-        public: boolean,
+        isPublic: boolean
     },
     created_at: string,
     updated_at: string
+}
+
+export type SupabaseProfile = {
+    id: string,
+    username: string,
+    display_name: string,
+    image_url: string,
+    email: string,
+    created_at: string,
+    is_public: boolean,
+    last_sign_in_at: string
 }

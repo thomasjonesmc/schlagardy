@@ -24,15 +24,15 @@
         <ProfileRow label="Email" value={$session.user.email} />
         <ProfileRow label="Username" value={$session.user.username} />
         <ProfileRow label="Display Name" value={$session.user.displayName} />
-        <ProfileRow label="Last Sign In" value={dateTime($session.user.last_sign_in_at)} />
-        <ProfileRow label="Account Created At" value={dateTime($session.user.created_at)} />
-        <ProfileRow label="Account is Public" value={(String)(!!$session.user.public)} />
+        <ProfileRow label="Account Created At" value={dateTime($session.user.createdAt)} />
+        <ProfileRow label="Last Sign In" value={dateTime($session.user.lastSignInAt)} />
+        <ProfileRow label="Account is Public" value={(String)(!!$session.user.isPublic)} />
     </div>
 {/if}
 
-<!-- <pre>
+<pre>
     {JSON.stringify($session.user, null, 4)}
-</pre> -->
+</pre>
 
 <style>
     #profile {

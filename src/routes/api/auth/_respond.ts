@@ -1,16 +1,21 @@
-export function respond(session, error) {
+import User from "$lib/models/user.model";
+
+export function respond({ user }, error) {
 	
     if (error) {
 		return { status: 401, body: error };
 	}
 
-	const json = JSON.stringify(session.user);
-	const value = Buffer.from(json).toString('base64');
+	const sessionUser = new User(user);
+
+	const value = Buffer
+		.from(sessionUser.toJSON())
+		.toString('base64');
 
 	return {
 		headers: {
 			'set-cookie': `user=${value}; Path=/; HttpOnly`
 		},
-		body: session
+		body: { user: { ...sessionUser } }
 	};
 }

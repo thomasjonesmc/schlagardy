@@ -4,10 +4,16 @@ import { respond } from './_respond';
 export async function post({ request }) {
 	const { email, password } = await request.json();
 
-	const { session, error } = await supabase.auth.signIn({
+	const { error } = await supabase.auth.signIn({
 		email,
 		password
 	});
 
-	return respond(session, error);
+	const { data: [user] } = await supabase
+		.from('profiles')
+		.select('*');
+
+	console.log(user);
+
+	return respond({user}, error);
 }

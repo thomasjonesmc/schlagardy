@@ -34,11 +34,13 @@
 
         submitting = true;
         
-        const { user, message } = await post("/api/auth/signin", { email, password });
+        const { user, message, ...rest } = await post("/api/auth/signin", { email, password });
         
         if (message) return error = message;
 
-        $session.user = new User(user);
+        console.log(user);
+
+        $session.user = user;
         
         submitting = false;
         goto(route);

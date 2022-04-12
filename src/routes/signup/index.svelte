@@ -30,7 +30,7 @@
         password: "",
         displayName: "",
         username: "",
-        public: false
+        isPublic: true
     }
 
     let error = null;
@@ -38,7 +38,7 @@
     async function signUp() {
         
         for (let prop in newUser) {
-            if (!newUser[prop]) return error = "All Fields Required";
+            if (newUser[prop] === "") return error = "All Fields Required";
         }
 
         submitting = true;
@@ -50,7 +50,7 @@
             return error = message;
         }
 
-        $session.user = new User(user);
+        $session.user = user;
         
         submitting = false;
         goto("/");
@@ -63,7 +63,7 @@
     <PasswordRow bind:value={newUser.password} />
     <InputRow id="username" bind:value={newUser.username} />
     <InputRow id="display-name" bind:value={newUser.displayName} />
-    <CheckBoxRow id="make-account-public" bind:checked={newUser.public} />
+    <CheckBoxRow id="make-account-public" bind:checked={newUser.isPublic} />
 
     {#if error}
         <div style="color: red;">{error}</div>
