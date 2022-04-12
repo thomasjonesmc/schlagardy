@@ -15,7 +15,5 @@ export async function post({ request }) {
 		.from('profiles')
 		.select('*');
 
-	console.log(user);
-
 	return respond({user}, error);
 }

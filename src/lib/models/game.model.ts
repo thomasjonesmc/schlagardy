@@ -1,3 +1,5 @@
+import type User from "./user.model";
+
 export default class Game {
 
     id: number;
@@ -9,6 +11,7 @@ export default class Game {
     play_count: number;
     image_url: string;
     updated_at: string;
+    author: User;
     rounds: Array<Round>;
 
 }
@@ -37,7 +40,7 @@ export class Board {
 
 export class Category {
 
-    constructor(cells: number, category: string='') {
+    constructor(cells: number, category='') {
         this.category = category;
         this.cells = [];
 
@@ -52,7 +55,7 @@ export class Category {
 
 export class Cell {
 
-    constructor(question: string='', answer: string='', isDailyDouble=false) {
+    constructor(question='', answer='', isDailyDouble=false) {
         this.question = question;
         this.answer = answer;
         this.isDailyDouble = isDailyDouble;

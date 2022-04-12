@@ -5,7 +5,7 @@ export async function get({ locals: { user } }) {
 
     let query = supabase
         .from('games')
-        .select('*, rounds(*)');
+        .select('*, rounds(*), author:profiles(*)');
     
     if (user) query = query.or(`user_id.eq.${user.id},is_public.eq.true`);
     else query = query.eq('is_public', true);
@@ -15,8 +15,6 @@ export async function get({ locals: { user } }) {
         .order('play_count', {
             ascending: false
         });
-
-    console.log(error);
 
     if (error) return { status: 401, body: error };
 

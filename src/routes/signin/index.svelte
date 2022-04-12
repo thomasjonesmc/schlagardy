@@ -38,8 +38,6 @@
         
         if (message) return error = message;
 
-        console.log(user);
-
         $session.user = user;
         
         submitting = false;

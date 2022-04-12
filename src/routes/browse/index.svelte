@@ -36,6 +36,7 @@
 			<div>
 				<b><a href={`/game/${g.id}`}>{g.title}</a></b>
 				<p class="game-description">{g.description}</p>
+				<a href={`/users/${g.author.username}`}>{g.author.username}</a>
 			</div>
 			<div class="game-stats">			
 				<p>{dateTime(g.created_at)}</p>
@@ -50,6 +51,8 @@
 	#browse {
 		display: grid;
 		gap: 1em;
+		margin: 0 auto;
+		max-width: 600px;
 	}
 
 	.game-card {
@@ -63,6 +66,7 @@
 	}
 
 	b {
+		font-size: 1.5rem;
 		color: black;
 	}
 

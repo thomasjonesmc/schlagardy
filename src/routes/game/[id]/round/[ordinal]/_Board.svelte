@@ -6,7 +6,6 @@
     import Form from "$lib/components/Form/Form.svelte";
     import InputRow from "$lib/components/Form/InputRow.svelte";
     import { Board, Cell } from "$lib/models/game.model";
-    import { clear_loops } from "svelte/internal";
 
     export let rows = 5;
     export let cols = 5;
