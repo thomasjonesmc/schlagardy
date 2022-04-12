@@ -1,14 +1,22 @@
 import supabase from '$lib/db';
+import cookie from 'cookie';
 
-export async function get({  }) {
-    const { data, error } = await supabase
-    .from('games')
-        .select('*, rounds(*)')
-        .eq('is_public', true)
-        .eq('is_in_progress', true)
+export async function get({ locals: { user } }) {
+
+    let query = supabase
+        .from('games')
+        .select('*, rounds(*)');
+    
+    if (user) query = query.or(`user_id.eq.${user.id},is_public.eq.true`);
+    else query = query.eq('is_public', true);
+
+    const { data, error } = await query
+        // .eq('is_in_progress', true)
         .order('play_count', {
             ascending: false
         });
+
+    console.log(error);
 
     if (error) return { status: 401, body: error };
 

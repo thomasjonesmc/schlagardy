@@ -7,7 +7,7 @@ export async function handle({ event, resolve }) {
 	const user = cookies.user && Buffer.from(cookies.user, 'base64').toString('utf-8');
 	
     event.locals.user = user ? JSON.parse(user) : null;
-	
+		
 	return await resolve(event);
 }
 

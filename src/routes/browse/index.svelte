@@ -40,6 +40,7 @@
 			<div class="game-stats">			
 				<p>{dateTime(g.created_at)}</p>
 				<p>{g.play_count} Plays</p>
+				<p>{g.is_public ? "Public" : "Private"}</p>
 			</div>
 		</div>
 	{/each}

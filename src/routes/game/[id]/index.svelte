@@ -1,7 +1,7 @@
 <script lang="ts" context="module">
     export async function load({ session, params, fetch }) {
 
-		if (!session.user) return { status: 302, redirect: `/` };
+		if (!session.user) return { status: 302, redirect: `/signin?goto=/game/${params.id}` };
 
 		const response = await fetch(`/api/game/${params.id}`);
 
