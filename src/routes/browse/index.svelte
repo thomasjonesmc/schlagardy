@@ -40,6 +40,7 @@
 			</div>
 			<div class="game-stats">			
 				<p>{dateTime(g.created_at)}</p>
+				<p>{g.rounds.length} Rounds</p>
 				<p>{g.play_count} Plays</p>
 				<p>{g.is_public ? "Public" : "Private"}</p>
 			</div>

@@ -117,8 +117,8 @@
         text-align: center;
         color: gray;
         border: none;
+        overflow: hidden;
         transition: all .2s ease-in-out;
-        /* transform-origin: right; */
     }
 
     .finished {
@@ -173,6 +173,7 @@
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;  
         overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .cell:hover {
