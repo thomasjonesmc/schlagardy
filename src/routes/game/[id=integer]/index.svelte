@@ -34,14 +34,20 @@
 	<p>{$session.game.rounds.length} {$session.game.rounds.length === 1 ? "Round" : 'Rounds'}</p>
 	
 	<div id="rounds">
-		{#each $session.game.rounds as r}
+		{#each $session.game.rounds as r, i}
 		<ButtonLink href={`/game/${$session.game.id}/round/${r.ordinal}`}>
-			{r.title || "Unnamed Round"}
+			<b>Round {i + 1}</b>
+			<p>{r.title || "Unnamed Round"}</p>
 		</ButtonLink>
 		{/each}
 	</div>
 	
-	<Button on:click={addRound} style="max-width: fit-content;">Add a round</Button>
+	<Button 
+		on:click={addRound} 
+		style="max-width: fit-content; background-color: lightgreen; color: green; border: 1px solid green;"
+	>
+		Add a round
+	</Button>
 	
 	<!-- <pre>{JSON.stringify($session.game, null, 4)}</pre> -->
 {:else}

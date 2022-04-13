@@ -17,72 +17,86 @@
 			session.game = response.ok && (await response.json());
 		}
 
-		const roundExists = session.game.rounds.findIndex((r: Round) => r.ordinal === ordinal) >= 0;
+		const roundExists = session.game.rounds.find((r: Round) => r.ordinal === ordinal);
 
 		// create round if it doesn't already exist
 		if (!roundExists) {
 
 			// order new round at very end
-			const newOrdinal = session.game.rounds.length + 1;
+			ordinal = session.game.rounds.length + 1;
 
 			// insert the game
 			const response = await fetch(`/api/game/${params.id}/round`, {
 				method: "POST",
-				body: JSON.stringify({ title: "", ordinal: newOrdinal })
+				body: JSON.stringify({ title: "", ordinal })
 			});
 
-			// //
-			// if (response.ok) {
-			// 	session.game.rounds = await response.json();
-			// }
+			const [newRound] = await response.json();
+
+			// add the rounds to the game
+			if (response.ok) {
+				session.game.rounds = [ ...session.game.rounds, newRound ]
+			}
 
 			// redirect to the new ordinal if it doesn't match url ordinal
-			if (newOrdinal !== ordinal) {
+			if (ordinal !== parseInt(params.ordinal)) {
 				return {
 					status: 302,
-					redirect: `/game/${params.id}/round/${newOrdinal}`
+					redirect: `/game/${params.id}/round/${ordinal}`
 				}
 			}
 		}
 
 		return {
 			props: {
-				ordinal
+				ordinal,
+				game: session.game
 			}
 		};
 	}
 </script>
 
 <script lang="ts">
-	import { session } from "$app/stores";	
+	import SubmitButton from "$lib/components/Buttons/SubmitButton.svelte";
 	import Board from "./_Board.svelte";
+	import type Game from "$lib/models/game.model";
+	import isEqual from 'lodash/isEqual';
+	import { put } from "$lib/util";
 
 	export let ordinal: number;
+	export let game: Game;
+	let round = game.rounds.find(r => r.ordinal === ordinal);
+	let originalRound = { ...round };
 
-	let game = $session.game;
-	let roundIndex = game?.rounds.findIndex(r => r.ordinal === ordinal);
+	async function onSubmit() {
+		const res = await put(`/api/game/${game.id}/round/${round.ordinal}`, round);
+	}
 </script>
 
 {#if !game}
 	<h1>Can't Find Game</h1>
 {:else}
-	<div id="page">
+	<form on:submit|preventDefault={onSubmit} id="page">
 		<h1>
 			<a href={`/game/${game.id}`}>{game.title}</a>
 		</h1>
 		<div id="input-container">
-			<input type="text" placeholder="Round Title" bind:value={game.rounds[roundIndex].title} />
+			<input type="text" placeholder="Round Title" bind:value={round.title} />
 		</div>
-		<Board bind:board={game.rounds[roundIndex].board} />
-	</div>
+		<Board bind:board={round.board} />
+
+		<SubmitButton>Save</SubmitButton>
+	</form>
 {/if}
 
-<pre>{JSON.stringify(game, null, 4)}</pre>
+<pre>{JSON.stringify(round, null, 4)}</pre>
 
 <style>
 	#page {
 		display: grid;
 		gap: 1em;
+		margin: 0 auto;
+		max-width: 800px;
 	}
 
 	h1 {
@@ -90,9 +104,7 @@
 	}
 
 	#input-container {
-		margin: 0 auto;
 		display: flex;
-		max-width: 800px;
 		width: 100%;
 	}
 

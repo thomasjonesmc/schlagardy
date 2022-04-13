@@ -9,6 +9,17 @@ export async function post(endpoint: string, data: unknown = {}) {
 	}).then((r) => r.json());
 }
 
+export async function put(endpoint: string, data: unknown = {}) {
+	return fetch(endpoint, {
+		method: 'PUT',
+		credentials: 'include',
+		body: JSON.stringify(data),
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	}).then((r) => r.json());
+}
+
 export async function get(endpoint: string) {
 	return fetch(endpoint, {
 		method: 'GET',

@@ -4,7 +4,7 @@ import { respond } from './_respond';
 export async function post({ request }) {
 	const { email, password, ...rest } = await request.json();
 
-	const { error } = await supabase.auth.signUp({
+	const { session, error } = await supabase.auth.signUp({
 		email,
 		password
 	}, {
@@ -13,7 +13,8 @@ export async function post({ request }) {
 
 	const { data: [user] } = await supabase
 		.from('profiles')
-		.select('*');
+		.select('*')
+		.eq('id', session.user.id);
 
 	return respond({user}, error);
 }

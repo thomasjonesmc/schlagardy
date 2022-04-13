@@ -1,7 +1,6 @@
 <script lang="ts" context="module">
 
     export async function load({params, fetch}) {
-        // console.log(params);
 
         const res = await fetch(`/api/user/${params.username}`);
 
