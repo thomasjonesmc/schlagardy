@@ -60,16 +60,44 @@
 	import SubmitButton from "$lib/components/Buttons/SubmitButton.svelte";
 	import Board from "./_Board.svelte";
 	import type Game from "$lib/models/game.model";
-	import isEqual from 'lodash/isEqual';
 	import { put } from "$lib/util";
+	import ButtonLink from "$lib/components/Buttons/ButtonLink.svelte";
+	import { invalidate } from "$app/navigation";
+	import { page } from "$app/stores";
 
 	export let ordinal: number;
 	export let game: Game;
 	let round = game.rounds.find(r => r.ordinal === ordinal);
+
+	let saving = false;
+	let btn: HTMLButtonElement;
+	let btnText = "Save";
+
 	let originalRound = { ...round };
 
 	async function onSubmit() {
-		const res = await put(`/api/game/${game.id}/round/${round.ordinal}`, round);
+		saving = true;
+		
+		const res = await put(`/api/game/${game.id}/round/${ordinal}`, round);
+		
+		btn.classList.add("btn-success");
+		btnText = "Saved!";
+
+		setTimeout(() => {
+			btn.classList.remove("btn-success");
+			btnText = "Save";
+			saving = false;
+		}, 1000);
+
+		// async function goPrevious() {
+			
+		// 	await invalidate(`/api/game/${game.id}`);
+		// }
+
+		// async function goNext() {
+
+		// }
+
 	}
 </script>
 
@@ -77,15 +105,22 @@
 	<h1>Can't Find Game</h1>
 {:else}
 	<form on:submit|preventDefault={onSubmit} id="page">
-		<h1>
-			<a href={`/game/${game.id}`}>{game.title}</a>
-		</h1>
+		<header>
+			<h1>
+				<a href={`/game/${game.id}`}>{game.title}</a>
+			</h1>
+			<div id="rounds-nav">
+				<a href={`/game/${game.id}/round/${round.ordinal - 1}`}>Prev</a>
+				<p>Round {round.ordinal} of {game.rounds.length}</p>
+				<a href={`/game/${game.id}/round/${round.ordinal + 1}`}>Next</a>
+			</div>
+		</header>
 		<div id="input-container">
 			<input type="text" placeholder="Round Title" bind:value={round.title} />
 		</div>
 		<Board bind:board={round.board} />
 
-		<SubmitButton>Save</SubmitButton>
+		<SubmitButton bind:btn disabled={saving}>{btnText}</SubmitButton>
 	</form>
 {/if}
 
@@ -98,8 +133,15 @@
 		margin: 0 auto;
 		max-width: 800px;
 	}
+	
+	#rounds-nav {
+		display: flex;
+		justify-content: center;
+		gap: .75em;
+		color: gray;
+	}
 
-	h1 {
+	h1, p {
 		text-align: center;
 	}
 

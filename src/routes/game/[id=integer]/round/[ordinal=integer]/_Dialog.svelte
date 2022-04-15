@@ -7,18 +7,18 @@
     export let id: string;
     export let cat: Category;
     export let cell: Cell;
-    export let row: number;
+    export let rowVal: number;
 
-    let modal;
+    export let dialog;
 
     function closeModal() {
-        modal.close();
+        dialog.close();
     }
 </script>
 
-<dialog bind:this={modal} {id}>
+<dialog bind:this={dialog} {id}>
     <div class="edit-container">
-        <h2>{cat.category || "Unnamed Category"} - {row}</h2>
+        <h2>{cat.category || "Unnamed Category"} - {rowVal}</h2>
         
         <InputRow id="question" bind:value={cell.question} />
         <InputRow id="answer" bind:value={cell.answer} />
