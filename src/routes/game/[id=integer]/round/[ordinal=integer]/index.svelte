@@ -70,8 +70,6 @@
 	
 	$: round = game.rounds.find(r => r.ordinal === ordinal);
 
-	let jjj = null;
-
 	let saving = false;
 	let btn: HTMLButtonElement;
 	let btnText = "Save";
@@ -165,14 +163,17 @@
 	</form>
 {/if}
 
-<pre>{JSON.stringify(round, null, 4)}</pre>
+<!-- <pre>{JSON.stringify(round, null, 4)}</pre> -->
 
 <style>
 	#page {
-		display: grid;
+		/* background-color: green; */
+		display: flex;
+		flex-direction: column;
 		gap: 1em;
 		margin: 0 auto;
-		max-width: 800px;
+		flex: 1;
+		width: 100%;
 	}
 	
 	#rounds-nav {
@@ -189,6 +190,8 @@
 	#input-container {
 		display: flex;
 		width: 100%;
+		align-self: center;
+		max-width: 800px;
 	}
 
 	input {

@@ -77,7 +77,7 @@
         color: gray;
         border: none;
         overflow: hidden;
-        transition: all .2s ease-in-out;
+        transition: transform .2s ease-in-out;
     }
 
     .finished {

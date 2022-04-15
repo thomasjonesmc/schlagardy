@@ -54,6 +54,7 @@
 		gap: 1em;
 		margin: 0 auto;
 		max-width: 600px;
+		width: 100%;
 	}
 
 	.game-card {

@@ -22,5 +22,7 @@
         height: 100%;
         flex: 1;
         padding: 1em;
+        display: flex;
+        flex-direction: column;
     }
 </style>

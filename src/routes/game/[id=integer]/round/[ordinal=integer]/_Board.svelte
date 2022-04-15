@@ -61,16 +61,19 @@
 
 <style>
     #board {
+        flex: 1;
         display: grid;
         grid-auto-flow: column;
+        position: relative;
         /* grid-template-rows: repeat(6, 1fr);
         grid-template-columns: 50px repeat(6, 1fr); */
-        overflow-x: auto;
-        background-color: gray;
+        /* overflow-x: auto; */
+        background-color: black;
         gap: 2px;
-        border: 2px solid gray;
+        border: 2px solid black;
         box-shadow: 0 0 1em 0 gray;
         border-radius: .25em;
+        width: 100%;
     }
 
     .row-value {
@@ -78,7 +81,6 @@
         background-color: white;
     }
 
-    
     input {
         display: inline-block;
         border: none;
