@@ -1,5 +1,5 @@
 <script lang="ts" context="module">
-	import type { Round } from "$lib/models/game.model";
+	import { Category, Cell, type Round } from "$lib/models/game.model";
 
     export async function load({ session, fetch, params }) {
 
@@ -12,10 +12,8 @@
 			return {};
 		}
 
-		if (!session.game) {
-			const response = await fetch(`/api/game/${params.id}`);
-			session.game = response.ok && (await response.json());
-		}
+		const response = await fetch(`/api/game/${params.id}`);
+		session.game = response.ok && (await response.json());
 
 		const roundExists = session.game.rounds.find((r: Round) => r.ordinal === ordinal);
 
@@ -61,13 +59,18 @@
 	import Board from "./_Board.svelte";
 	import type Game from "$lib/models/game.model";
 	import { put } from "$lib/util";
-	import ButtonLink from "$lib/components/Buttons/ButtonLink.svelte";
-	import { invalidate } from "$app/navigation";
+	import { afterNavigate, goto } from "$app/navigation";
+	import LinkButton from "$lib/components/Buttons/LinkButton.svelte";
+	import Button from "$lib/components/Buttons/Button.svelte";
 	import { page } from "$app/stores";
+	import Spinner from "$lib/components/loading/Spinner.svelte";
 
 	export let ordinal: number;
 	export let game: Game;
-	let round = game.rounds.find(r => r.ordinal === ordinal);
+	
+	$: round = game.rounds.find(r => r.ordinal === ordinal);
+
+	let jjj = null;
 
 	let saving = false;
 	let btn: HTMLButtonElement;
@@ -75,7 +78,7 @@
 
 	let originalRound = { ...round };
 
-	async function onSubmit() {
+	async function saveRound() {
 		saving = true;
 		
 		const res = await put(`/api/game/${game.id}/round/${ordinal}`, round);
@@ -88,21 +91,53 @@
 			btnText = "Save";
 			saving = false;
 		}, 1000);
+	}
 
-		// async function goPrevious() {
-			
-		// 	await invalidate(`/api/game/${game.id}`);
-		// }
+	async function onSubmit() {
+		saveRound();
+	}
 
-		// async function goNext() {
+	async function addRound() {
+		ordinal = game.rounds.length + 1;
+		goto(`/game/${game.id}/round/${ordinal}`);
+	}
 
-		// }
+	async function goPrevious() {
+		// await saveRound();
+		ordinal--;
+		goto(`/game/${game.id}/round/${ordinal}`);
+	}
 
+	async function goNext() {
+		// await saveRound();
+		ordinal++;
+		goto(`/game/${game.id}/round/${ordinal}`);
+	}
+
+	function addRow() {
+		let rows = round.board.rows;
+		let r = rows[rows.length - 1];
+
+		round.board.rows = [ ...rows, r ];
+
+		round.board.categories = round.board.categories.map(c => {
+			return { ...c, cells: [ ...c.cells, new Cell() ]}
+		});
+	}
+
+	function addCategory() {
+		let cats = round.board.categories;
+
+		round.board.categories = [ ...cats, new Category(round.board.rows.length) ];
 	}
 </script>
 
 {#if !game}
 	<h1>Can't Find Game</h1>
+{:else if !round}
+	<div style="display: grid; place-content: center;">
+		<Spinner />
+	</div>
 {:else}
 	<form on:submit|preventDefault={onSubmit} id="page">
 		<header>
@@ -110,17 +145,23 @@
 				<a href={`/game/${game.id}`}>{game.title}</a>
 			</h1>
 			<div id="rounds-nav">
-				<a href={`/game/${game.id}/round/${round.ordinal - 1}`}>Prev</a>
+				<LinkButton on:click={goPrevious} disabled={ordinal === 1}>Prev</LinkButton>
 				<p>Round {round.ordinal} of {game.rounds.length}</p>
-				<a href={`/game/${game.id}/round/${round.ordinal + 1}`}>Next</a>
+				<LinkButton on:click={goNext} disabled={ordinal === game.rounds.length}>Next</LinkButton>
 			</div>
 		</header>
+		<div id="round-buttons">
+			<SubmitButton bind:btn disabled={saving}>{btnText}</SubmitButton>
+			<Button disabled={saving} on:click={addRound}>Add Round</Button>
+			<Button disabled={saving} on:click={addRow}>Add Row</Button>
+			<Button disabled={saving} on:click={addCategory}>Add Category</Button>
+
+		</div>
 		<div id="input-container">
 			<input type="text" placeholder="Round Title" bind:value={round.title} />
 		</div>
 		<Board bind:board={round.board} />
 
-		<SubmitButton bind:btn disabled={saving}>{btnText}</SubmitButton>
 	</form>
 {/if}
 
@@ -151,10 +192,17 @@
 	}
 
 	input {
-		padding: 1em;
+		padding: .35em;
+		font-size: 1.25rem;
 		flex: 1;
 		border: none;
 		box-shadow: 0 0 .8em 0 gray;
 		border-radius: .25em;
+	}
+
+	#round-buttons {
+		display: flex;
+		justify-content: center;
+		gap: 1em;
 	}
 </style>

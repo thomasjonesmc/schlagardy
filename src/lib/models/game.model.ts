@@ -19,7 +19,7 @@ export default class Game {
 export class Round {
     id: number;
     title: string;
-    jeopardy_id: string;
+    game_id: string;
     created_at: string;
     updated_at: string;
     ordinal: number;
@@ -27,14 +27,20 @@ export class Round {
 }
 
 export class Board {
-    constructor(rows: number, cols: number) {
+    constructor(rows: number, cols: number, rowStart: number = 100, rowIncrement: number = rowStart) {
         this.categories = [];
+        this.rows = [];
 
         for (let i = 0; i < cols; i++) {
             this.categories[i] = new Category(rows);
         }
+
+        for (let i = 0; i < rows; i++) {
+            this.rows[i] = i * rowIncrement + rowStart;
+        }
     }
 
+    rows: Array<number>;
     categories: Array<Category>;
 }
 

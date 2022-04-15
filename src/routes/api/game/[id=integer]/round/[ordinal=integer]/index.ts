@@ -11,6 +11,7 @@ export async function put({ params, request }) {
     const { data, error } = await supabase
         .from('rounds')
         .update({title, board})
+        .eq('game_id', params.id)
         .eq('ordinal', params.ordinal);
 
     return {

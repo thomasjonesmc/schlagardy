@@ -6,9 +6,6 @@
 
     export let board: Board = new Board(rows, cols);
 
-    export let startVal = 200;
-    export let increment = startVal;
-
     let dragStartRow: number;
     let dragStartCol: number;
 
@@ -32,13 +29,19 @@
     }
 </script>
 
-<div id="board">
+<div 
+    id="board"
+    style={`
+        grid-template-rows: repeat(${board.rows.length + 1}, 1fr);
+        grid-template-columns: 50px repeat(${board.categories.length}, 1fr);
+    `}
+>
     <div class="row-value"></div>
-    <div class="row-value">200</div>
-    <div class="row-value">400</div>
-    <div class="row-value">600</div>
-    <div class="row-value">800</div>
-    <div class="row-value">1000</div>
+    {#each board.rows as row}
+        <div class="row-value">
+            <input placeholder="value" bind:value={row} />
+        </div>
+    {/each}
 
     {#each board.categories as cat, col}
         <div class="category">
@@ -48,7 +51,7 @@
             <CellComponent 
                 bind:cell 
                 {row} {col} {cat} {board} 
-                rowVal={row * increment + startVal}
+                rowVal={board.rows[row]}
                 on:dragstart={() => onDragStart(row, col)}
                 on:drop={() => onDrop(row, col)}
             />
@@ -60,8 +63,8 @@
     #board {
         display: grid;
         grid-auto-flow: column;
-        grid-template-rows: repeat(6, 1fr);
-        grid-template-columns: 50px repeat(5, 1fr);
+        /* grid-template-rows: repeat(6, 1fr);
+        grid-template-columns: 50px repeat(6, 1fr); */
         overflow-x: auto;
         background-color: gray;
         gap: 2px;
@@ -72,7 +75,6 @@
 
     .row-value {
         display: grid;
-        place-content: center;
         background-color: white;
     }
 

@@ -8,7 +8,7 @@ export async function post({ request, params }) {
 	const { data, error } = await supabase
 		.from('rounds')
 		.insert([
-			{ title, ordinal, jeopardy_id: params.id, board: new Board(rows ?? 5, cols ?? 5) }
+			{ title, ordinal, game_id: params.id, board: new Board(rows ?? 5, cols ?? 6, 100 * ordinal) }
 		]);
 
     if (error) return { status: 401, body: error };

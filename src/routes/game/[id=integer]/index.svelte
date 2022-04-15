@@ -30,9 +30,9 @@
 	<header>
 		<h1>{$session.game.title}</h1>
 
-		<a href={`/game/${$session.game.id}/round/${ordinal}`} id="add-btn">
-			<Icon icon="fa-solid:plus" />
-		</a>
+		<ButtonLink href={`/game/${$session.game.id}/round/${ordinal}`}>
+			Add New Round
+		</ButtonLink>
 	</header>
 
 	<p>{$session.game.rounds.length} {$session.game.rounds.length === 1 ? "Round" : 'Rounds'}</p>
@@ -40,6 +40,7 @@
 	<div id="rounds">
 		{#each $session.game.rounds as r, i}
 		<ButtonLink
+			style="min-width: max-content; flex: 1;"
 			href={`/game/${$session.game.id}/round/${r.ordinal}`}
 		>
 			<b>Round {i + 1}</b>
@@ -49,7 +50,7 @@
 	</div>
 	
 	<div id="options">
-		<ButtonLink href="/browse">Back to Games</ButtonLink>
+		<a href="/browse">Back to Games</a>
 	</div>
 	
 	<!-- <pre>{JSON.stringify($session.game, null, 4)}</pre> -->
@@ -75,6 +76,7 @@
 
 	#rounds {
 		display: flex;
+		flex-wrap: wrap;
 		gap: .5em;
 	}
 
@@ -82,18 +84,5 @@
 		display: flex;
 		gap: .5em;
 		align-items: center;
-	}
-
-	#add-btn {
-		padding: 0;
-		font-size: large;
-		background-color: lightgreen;
-		border: 2px solid green;
-		color: green;
-		width: 30px;
-		height: 30px;
-		border-radius: 50%;
-		display: grid;
-		place-content: center;
 	}
 </style>

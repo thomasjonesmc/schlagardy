@@ -3,7 +3,7 @@
     export let type: string = 'button';
     export let disabled: boolean = false;
     export let cssClass: string = undefined;
-    export let btn: HTMLButtonElement;
+    export let btn: HTMLButtonElement = null;
 </script>
 
 <button bind:this={btn} on:click class={cssClass} {type} {disabled} {style}>
