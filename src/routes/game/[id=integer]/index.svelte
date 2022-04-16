@@ -45,6 +45,7 @@
 		>
 			<b>Round {i + 1}</b>
 			<p>{r.title || "Unnamed Round"}</p>
+			<p id="board-size">Board Size {r.board.rows.length} x {r.board.categories.length}</p>
 		</ButtonLink>
 		{/each}
 	</div>
@@ -84,5 +85,10 @@
 		display: flex;
 		gap: .5em;
 		align-items: center;
+	}
+
+	#board-size {
+		color: gray;
+		font-size: .9rem;
 	}
 </style>

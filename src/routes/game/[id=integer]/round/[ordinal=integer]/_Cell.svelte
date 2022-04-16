@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { Board, Category, Cell } from "$lib/models/game.model";
-    import { onMount } from "svelte";
+import Icon from "@iconify/svelte";
     import Dialog from "./_Dialog.svelte";
 
     export let board: Board;
@@ -42,23 +42,52 @@
 
         return cssClass;
     }
+
+    function onDragStart(e) {
+        e.dataTransfer.setData("cell", JSON.stringify(cell));
+        e.dataTransfer.setData("row", row);
+        e.dataTransfer.setData("col", col);
+    }
+
+    function onDrop(e) {
+        let r = parseInt(e.dataTransfer.getData("row"));
+        let c = parseInt(e.dataTransfer.getData("col"));
+        
+        let dropCell = JSON.parse(e.dataTransfer.getData("cell"));
+        board.categories[c].cells[r] = cell;
+        cell = dropCell;
+    }
+
 </script>
 
-<button 
-    on:click={openModal} 
-    draggable={true}
-    on:dragstart
-    on:dragover|preventDefault
-    on:drop|preventDefault
+<div
     class={`cell ${getCellClass(cell)}`}
-    type="button"
+    draggable={true}
+    on:dragstart={onDragStart}
+    on:dragover|preventDefault
+    on:drop|preventDefault={onDrop}
 >
-    {#if cell.question}
-        <p>{cell.question}</p>
-    {:else}
-        <p>{rowVal}</p>
-    {/if}
-</button>
+    <button
+        class="cell-btn"
+        on:click={openModal} 
+        type="button"
+    >
+        {#if cell.question}
+            <p>{cell.question}</p>
+        {:else}
+            <p>{rowVal}</p>
+        {/if}
+    </button>
+
+    <div class="cell-controls">
+        <button>
+            <Icon icon="tabler:row-insert-bottom" />
+        </button>
+        <button>
+            <Icon icon="tabler:column-insert-right" />
+        </button>
+    </div>
+</div>
 
 <Dialog
     bind:dialog
@@ -69,15 +98,56 @@
 />
 
 <style>
-     .cell {
-        background-color: white;
-        padding: 1em;
+    .cell {
+        position: relative;
+        display: flex;
+        cursor: move;
+        min-width: 0;
         flex: 1;
         text-align: center;
-        color: gray;
+        transition: transform .2s ease-in-out;
+    }
+
+    .cell-btn {
+        color: inherit;
+        background-color: inherit;
         border: none;
         overflow: hidden;
-        transition: transform .2s ease-in-out;
+        width: 100%;
+        height: 100%;
+        cursor: inherit;
+    }
+
+    .cell p {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;  
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .cell-controls {
+        display: none;
+        right: 1em;
+        border-radius: .25em;
+        border: 1px solid rgb(20, 20, 20);
+        background-color: rgb(43, 43, 43);
+        color: rgb(189, 189, 189);
+        transform: translateY(-50%);
+        position: absolute;
+        font-size: large;
+        overflow: hidden;
+    }
+
+    .cell-controls button {
+        padding: .1em;
+        color: inherit;
+        background-color: inherit;
+        border: none;
+    }
+
+    .cell-controls button:hover {
+        filter: brightness(120%);
     }
 
     .finished {
@@ -127,16 +197,13 @@
         transform-origin: bottom right;
     }
 
-    .cell p {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;  
-        overflow: hidden;
-        text-overflow: ellipsis;
+    .cell:hover {
+        z-index: 999999;
+        /* transform: scale(1.2); */
+        box-shadow: 0 0 1em 0 black;
     }
 
-    .cell:hover {
-        transform: scale(1.2);
-        box-shadow: 0 0 1em 0 black;
+    .cell:hover .cell-controls {
+        display: flex;
     }
 </style>

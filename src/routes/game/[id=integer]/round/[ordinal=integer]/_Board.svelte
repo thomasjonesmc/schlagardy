@@ -1,32 +1,8 @@
 <script lang="ts">
-    import { Board, Cell } from "$lib/models/game.model";
+    import type { Board } from "$lib/models/game.model";
+import Icon from "@iconify/svelte";
     import CellComponent from "./_Cell.svelte";
-    export let rows = 5;
-    export let cols = 5;
-
-    export let board: Board = new Board(rows, cols);
-
-    let dragStartRow: number;
-    let dragStartCol: number;
-
-    function getCell(row: number, col: number) {
-        return board.categories[col].cells[row];
-    }
-
-    function setCell(row: number, col: number, cell: Cell) {
-        board.categories[col].cells[row] = cell;
-    }
-
-    function onDragStart(row: number, col: number) {
-        dragStartRow = row;
-        dragStartCol = col;
-    }
-
-    function onDrop(row: number, col: number) {
-        let dropCell = getCell(row, col);
-        setCell(row, col, getCell(dragStartRow, dragStartCol));
-        setCell(dragStartRow, dragStartCol, dropCell);
-    }
+    export let board: Board;
 </script>
 
 <div 
@@ -36,28 +12,45 @@
         grid-template-columns: 50px repeat(${board.categories.length}, 1fr);
     `}
 >
-    <div class="row-value"></div>
+    <div class="row-cell"></div>
     {#each board.rows as row}
-        <div class="row-value">
+        <div class="row-cell">
             <input placeholder="value" bind:value={row} />
+
+            <div class="controls">
+                <button>
+                    <Icon icon="tabler:row-insert-bottom" />
+                </button> <button>
+                    <Icon icon="tabler:row-insert-bottom" />
+                </button>
+            </div>
         </div>
     {/each}
 
     {#each board.categories as cat, col}
-        <div class="category">
+        <div class="col-cell">
             <input placeholder="Category Name" bind:value={cat.category} />
+        
+            <div class="controls">
+                <button>
+                    <Icon icon="tabler:row-insert-bottom" />
+                </button> <button>
+                    <Icon icon="tabler:row-insert-bottom" />
+                </button>
+            </div>
         </div>
         {#each cat.cells as cell, row}
             <CellComponent 
-                bind:cell 
-                {row} {col} {cat} {board} 
+                bind:cell
+                bind:board
+                {row} {col} {cat} 
                 rowVal={board.rows[row]}
-                on:dragstart={() => onDragStart(row, col)}
-                on:drop={() => onDrop(row, col)}
             />
         {/each}
     {/each}
 </div>
+
+<!-- <pre>{JSON.stringify(board, null, 4)}</pre> -->
 
 <style>
     #board {
@@ -76,9 +69,41 @@
         width: 100%;
     }
 
-    .row-value {
+    .row-cell, .col-cell {
         display: grid;
-        background-color: white;
+        position: relative;
+        background-color: green;
+    }
+
+    .row-cell:hover .controls,
+    .col-cell:hover .controls {
+        display: flex;
+    }
+
+    .controls {
+        position: absolute;
+        display: none;
+        border-radius: .25em;
+        border: 1px solid rgb(20, 20, 20);
+        background-color: rgb(43, 43, 43);
+        color: rgb(189, 189, 189);
+        right: 0;
+        transform: translateY(-50%) translateX(50%);
+        position: absolute;
+        font-size: large;
+        overflow: hidden;
+        z-index: 2;
+    }
+
+    .controls button {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: x-large;
+        color: inherit;
+        background-color: inherit;
+        border: none;
     }
 
     input {

@@ -2,7 +2,7 @@
 	import { Category, Cell, type Round } from "$lib/models/game.model";
 
     export async function load({ session, fetch, params }) {
-
+		
 		if (!session.user) return { status: 302, redirect: `/`};
 
 		let ordinal = parseInt(params.ordinal);
@@ -12,8 +12,10 @@
 			return {};
 		}
 
-		const response = await fetch(`/api/game/${params.id}`);
-		session.game = response.ok && (await response.json());
+		if (!session.game) {
+			const response = await fetch(`/api/game/${params.id}`);
+			session.game = response.ok && (await response.json());
+		}
 
 		const roundExists = session.game.rounds.find((r: Round) => r.ordinal === ordinal);
 
@@ -62,8 +64,9 @@
 	import { afterNavigate, goto } from "$app/navigation";
 	import LinkButton from "$lib/components/Buttons/LinkButton.svelte";
 	import Button from "$lib/components/Buttons/Button.svelte";
-	import { page } from "$app/stores";
+	import { page, session } from "$app/stores";
 	import Spinner from "$lib/components/loading/Spinner.svelte";
+	import { isEqual } from "lodash";
 
 	export let ordinal: number;
 	export let game: Game;
@@ -71,24 +74,13 @@
 	$: round = game.rounds.find(r => r.ordinal === ordinal);
 
 	let saving = false;
-	let btn: HTMLButtonElement;
-	let btnText = "Save";
-
-	let originalRound = { ...round };
 
 	async function saveRound() {
 		saving = true;
 		
 		const res = await put(`/api/game/${game.id}/round/${ordinal}`, round);
-		
-		btn.classList.add("btn-success");
-		btnText = "Saved!";
 
-		setTimeout(() => {
-			btn.classList.remove("btn-success");
-			btnText = "Save";
-			saving = false;
-		}, 1000);
+		saving = false;
 	}
 
 	async function onSubmit() {
@@ -97,17 +89,18 @@
 
 	async function addRound() {
 		ordinal = game.rounds.length + 1;
+		$session.game = game;
 		goto(`/game/${game.id}/round/${ordinal}`);
 	}
 
 	async function goPrevious() {
-		// await saveRound();
+		await saveRound();
 		ordinal--;
 		goto(`/game/${game.id}/round/${ordinal}`);
 	}
 
 	async function goNext() {
-		// await saveRound();
+		await saveRound();
 		ordinal++;
 		goto(`/game/${game.id}/round/${ordinal}`);
 	}
@@ -125,9 +118,42 @@
 
 	function addCategory() {
 		let cats = round.board.categories;
-
 		round.board.categories = [ ...cats, new Category(round.board.rows.length) ];
 	}
+
+	function hasUnsavedChanges(round: Round, prev: Round) {
+		let rows = round.board.rows;
+		let cats = round.board.categories;
+		let prevRows = prev.board.rows;
+		let prevCats = prev.board.categories;
+
+		
+		if (round.title !== prev.title) return true;
+		if (cats.length !== prevCats.length) return true;
+		if (rows.length !== prevRows.length) return true;
+		
+		console.log(rows.length, prevRows.length);
+
+		if (!isEqual(rows, prevRows)) return true;
+
+		// check cat categories same
+		for (let i = 0; i < cats.length; i++) {
+			let c1 = cats[i];
+			let c2 = prevCats[i];
+
+			if (c1.category !== c2.category) return true;
+
+			// check category cells the same
+			for (let j = 0; j < c1.cells.length; j++) {
+				if (!isEqual(c1.cells[j], c2.cells[j])) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
 </script>
 
 {#if !game}
@@ -149,11 +175,10 @@
 			</div>
 		</header>
 		<div id="round-buttons">
-			<SubmitButton bind:btn disabled={saving}>{btnText}</SubmitButton>
+			<SubmitButton disabled={saving}>Submit</SubmitButton>
 			<Button disabled={saving} on:click={addRound}>Add Round</Button>
 			<Button disabled={saving} on:click={addRow}>Add Row</Button>
 			<Button disabled={saving} on:click={addCategory}>Add Category</Button>
-
 		</div>
 		<div id="input-container">
 			<input type="text" placeholder="Round Title" bind:value={round.title} />
