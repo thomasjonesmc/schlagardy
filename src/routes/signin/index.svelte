@@ -45,13 +45,13 @@
     }
 </script>
 
-<Form on:submit={signIn} title="Sign In">
+<Form on:submit={signIn} title="Sign In" style="width: 100%;">
     <EmailRow bind:value={email} />
     <PasswordRow bind:value={password} />
-
+    
     {#if error}
-        <div style="color: red;">{error}</div>
+    <div style="color: red;">{error}</div>
     {/if}
-
+    
     <SubmitButton disabled={submitting}>Submit</SubmitButton>
 </Form>

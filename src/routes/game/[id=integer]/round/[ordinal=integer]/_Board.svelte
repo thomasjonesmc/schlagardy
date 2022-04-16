@@ -1,58 +1,129 @@
 <script lang="ts">
-    import type { Board } from "$lib/models/game.model";
-import Icon from "@iconify/svelte";
+    import { Category, Cell, type Board } from "$lib/models/game.model";
+    import Icon from "@iconify/svelte";
     import CellComponent from "./_Cell.svelte";
+
     export let board: Board;
+    export let ordinal: number;
+
+    function editRow(row: number, removeAmount=0) {
+
+        if (removeAmount === 0) {
+            board.rows.splice(row, removeAmount, board.rows[row] || 100 * ordinal);
+        } else {
+            board.rows.splice(row, removeAmount);
+        }
+
+        board.rows = board.rows;
+
+		board.categories = board.categories.map(c => {
+
+            if (removeAmount === 0) {
+                c.cells.splice(row, removeAmount, new Cell());
+            } else {
+                c.cells.splice(row, removeAmount);
+            }
+
+            return {
+                ...c,
+                cells: c.cells
+            }
+		});
+    }
+
+    function addRow(row: number) {
+        editRow(row + 1);
+	}
+
+    function deleteRow(row: number) {
+        editRow(row, 1);
+    }
+
+	function addCol(col: number) {
+		board.categories.splice(
+            col + 1, 0, new Category(board.rows.length)
+        );
+
+        board.categories = board.categories;
+	}
+
+    function deleteCol(col: number) {
+        board.categories.splice(col, 1);
+        board.categories = board.categories;
+    }
 </script>
 
-<div 
-    id="board"
-    style={`
-        grid-template-rows: repeat(${board.rows.length + 1}, 1fr);
-        grid-template-columns: 50px repeat(${board.categories.length}, 1fr);
-    `}
->
-    <div class="row-cell"></div>
-    {#each board.rows as row}
+
+<div id="board-container">
+    <div 
+        id="board"
+        style={`
+            grid-template-rows: repeat(${board.rows.length + 1}, 1fr);
+            grid-template-columns: 50px repeat(${board.categories.length}, 1fr);
+        `}
+    >
         <div class="row-cell">
-            <input placeholder="value" bind:value={row} />
-
             <div class="controls">
-                <button>
-                    <Icon icon="tabler:row-insert-bottom" />
-                </button> <button>
+                <button type="button" on:click={() => addRow(-1)}>
                     <Icon icon="tabler:row-insert-bottom" />
                 </button>
+                <button type="button" on:click={() => addCol(-1)}>
+                    <Icon icon="tabler:column-insert-right" />
+                </button> 
             </div>
         </div>
-    {/each}
+        {#each board.rows as row, i}
+            <div class="row-cell">
+                <input placeholder="value" bind:value={row} />
 
-    {#each board.categories as cat, col}
-        <div class="col-cell">
-            <input placeholder="Category Name" bind:value={cat.category} />
-        
-            <div class="controls">
-                <button>
-                    <Icon icon="tabler:row-insert-bottom" />
-                </button> <button>
-                    <Icon icon="tabler:row-insert-bottom" />
-                </button>
+                <div class="controls">
+                    <button type="button" on:click={() => deleteRow(i)}>
+                        <Icon icon="ci:trash-full" />
+                    </button>
+                    <button type="button" on:click={() => addRow(i)}>
+                        <Icon icon="tabler:row-insert-bottom" />
+                    </button> 
+                </div>
             </div>
-        </div>
-        {#each cat.cells as cell, row}
-            <CellComponent 
-                bind:cell
-                bind:board
-                {row} {col} {cat} 
-                rowVal={board.rows[row]}
-            />
         {/each}
-    {/each}
+
+        {#each board.categories as cat, col}
+            <div class="col-cell">
+                <input placeholder="Category Name" bind:value={cat.category} />
+            
+                <div class="controls">
+                    <button type="button" on:click={() => deleteCol(col)}>
+                        <Icon icon="ci:trash-full" />
+                    </button>
+                    <button type="button" on:click={() => addCol(col)}>
+                        <Icon icon="tabler:column-insert-right" />
+                    </button> 
+                </div>
+            </div>
+            {#each cat.cells as cell, row}
+                <CellComponent 
+                    bind:cell
+                    bind:board
+                    {row} {col} {cat} 
+                    rowVal={board.rows[row]}
+                />
+            {/each}
+        {/each}
+    </div>
 </div>
 
 <!-- <pre>{JSON.stringify(board, null, 4)}</pre> -->
 
 <style>
+    /* only exists to add padding to board so controls dont overflow screen */
+    #board-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        padding: 0 1em 1em 1em;
+    }  
+
     #board {
         flex: 1;
         display: grid;
@@ -67,12 +138,13 @@ import Icon from "@iconify/svelte";
         box-shadow: 0 0 1em 0 gray;
         border-radius: .25em;
         width: 100%;
+        height: 100%;
     }
 
     .row-cell, .col-cell {
         display: grid;
         position: relative;
-        background-color: green;
+        background-color: white;
     }
 
     .row-cell:hover .controls,
@@ -80,7 +152,15 @@ import Icon from "@iconify/svelte";
         display: flex;
     }
 
+
+    /* .col-cell .controls {
+        right: auto;
+        transform: translateY(-50%) translateX(-50%);
+        left: 0;
+    } */
+
     .controls {
+        width: max-content;
         position: absolute;
         display: none;
         border-radius: .25em;
@@ -91,12 +171,10 @@ import Icon from "@iconify/svelte";
         transform: translateY(-50%) translateX(50%);
         position: absolute;
         font-size: large;
-        overflow: hidden;
         z-index: 2;
     }
 
     .controls button {
-        flex: 1;
         display: flex;
         align-items: center;
         justify-content: center;

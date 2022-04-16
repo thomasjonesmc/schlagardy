@@ -65,7 +65,7 @@
 	import LinkButton from "$lib/components/Buttons/LinkButton.svelte";
 	import Button from "$lib/components/Buttons/Button.svelte";
 	import { page, session } from "$app/stores";
-	import Spinner from "$lib/components/loading/Spinner.svelte";
+	import Spinner from "$lib/components/Loading/Spinner.svelte";
 	import { isEqual } from "lodash";
 
 	export let ordinal: number;
@@ -175,7 +175,7 @@
 			</div>
 		</header>
 		<div id="round-buttons">
-			<SubmitButton disabled={saving}>Submit</SubmitButton>
+			<SubmitButton disabled={saving}>Save Changes</SubmitButton>
 			<Button disabled={saving} on:click={addRound}>Add Round</Button>
 			<Button disabled={saving} on:click={addRow}>Add Row</Button>
 			<Button disabled={saving} on:click={addCategory}>Add Category</Button>
@@ -183,8 +183,8 @@
 		<div id="input-container">
 			<input type="text" placeholder="Round Title" bind:value={round.title} />
 		</div>
-		<Board bind:board={round.board} />
-
+	
+		<Board bind:board={round.board} {ordinal} />
 	</form>
 {/if}
 

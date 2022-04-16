@@ -1,5 +1,4 @@
 import supabase from '$lib/db';
-import cookie from 'cookie';
 
 export async function get({ locals: { user } }) {
 

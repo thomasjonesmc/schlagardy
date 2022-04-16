@@ -58,7 +58,7 @@
 </script>
 
 
-<Form on:submit={signUp} title="Sign Up">
+<Form on:submit={signUp} title="Sign Up" style="width: 100%;">
     <EmailRow bind:value={newUser.email} />
     <PasswordRow bind:value={newUser.password} />
     <InputRow id="username" bind:value={newUser.username} />

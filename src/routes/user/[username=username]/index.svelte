@@ -13,11 +13,10 @@
 
 <script lang='ts'>
     import { page } from "$app/stores";
+import Profile from "$lib/components/Profile/Profile.svelte";
     import type User from "$lib/models/user.model";
 
     export let user: User;
 </script>
 
-<div>{$page.params.username}</div>
-<div>{user.username}</div>
-<div>{user.displayName}</div>
+<Profile {user} />

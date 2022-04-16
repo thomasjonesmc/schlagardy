@@ -36,7 +36,7 @@
 			<div>
 				<b><a href={`/game/${g.id}`}>{g.title}</a></b>
 				<p class="game-description">{g.description}</p>
-				<a href={`/users/${g.author.username}`}>{g.author.username}</a>
+				<a href={`/user/${g.author.username}`}>{g.author.username}</a>
 			</div>
 			<div class="game-stats">			
 				<p>{dateTime(g.created_at)}</p>
