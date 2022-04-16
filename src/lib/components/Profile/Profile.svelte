@@ -10,7 +10,9 @@
 {#if user}
     <div id="profile">
         <h1>Profile</h1>
-        <ProfileRow label="Email" value={user.email} />
+        {#if user.id === $session.user?.id}
+            <ProfileRow label="Email" value={user.email} />
+        {/if}
         <ProfileRow label="Username" value={user.username} />
         <ProfileRow label="Display Name" value={user.displayName} />
         <ProfileRow label="Account Created At" value={dateTime(user.createdAt)} />
@@ -33,6 +35,6 @@
     }
 
     h1 {
-        padding: .25em .3em;
+        padding: .25em 10px;
     }
 </style>

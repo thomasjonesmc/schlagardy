@@ -48,7 +48,7 @@
 	}
 </script>
 
-<Form on:submit={onSubmit} title="Create New Game">
+<Form on:submit={onSubmit} title="Create New Game" style="width: 100%;">
 	<InputRow id="title" bind:value={jeopardy.title} />
 	<TextAreaRow id="description" bind:value={jeopardy.description} />
 	<CheckBoxRow id="public" bind:checked={jeopardy.public} />

@@ -14,7 +14,7 @@
         display: flex;
         justify-content: space-between;
         border-top: 1px solid lightgray;
-        padding: 1em .75em;
+        padding: 1em 10px;
     }
 
     p {
