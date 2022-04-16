@@ -17,33 +17,58 @@
 
 <script lang="ts">
 	import { goto } from "$app/navigation";
+	import { session } from "$app/stores";
+	import Button from "$lib/components/Buttons/Button.svelte";
+	import ButtonLink from "$lib/components/Buttons/ButtonLink.svelte";
+import LinkButton from "$lib/components/Buttons/LinkButton.svelte";
 	import type Game from "$lib/models/game.model";
-	import { dateTime } from "$lib/util";
+	import { dateTime, del } from "$lib/util";
 
 	export let games: Array<Game> = [];
+
+	async function onDelete(id: number) {
+		const res = await del(`/api/game/${id}`);
+		games = games.filter(g => g.id !== id);
+		if ($session.game?.id === id) $session.game = null;
+	}
 </script>
 
 
 <div id="browse">
-	{#if games.length === 0}
-		<h1>No Games Found</h1>
-	{:else}
-		<h1>Games</h1>
-	{/if}
+	<header>
+		<h1>{games.length === 0 ? "No Games Found" : "Games"}</h1>
+		<ButtonLink href="/create" style="width: max-content;">
+			Create Game
+		</ButtonLink>
+	</header>
 
 	{#each games as g}
-		<div class="game-card" on:click={() => goto(`/game/${g.id}`)}>
-			<div>
-				<b><a href={`/game/${g.id}`}>{g.title}</a></b>
-				<p class="game-description">{g.description}</p>
-				<a href={`/user/${g.author.username}`}>{g.author.username}</a>
+		<div class="game-card">
+			<div class="card-top" on:click={() => goto(`/game/${g.id}`)}>
+				<div>
+					<b><a href={`/game/${g.id}`}>{g.title}</a></b>
+					<p class="game-description">{g.description}</p>
+					<a href={`/user/${g.author.username}`}>{g.author.username}</a>
+				</div>
+				<div class="game-stats">			
+					<p>{dateTime(g.created_at)}</p>
+					<p>{g.rounds.length} Rounds</p>
+					<p>{g.play_count} Plays</p>
+					<p>{g.is_public ? "Public" : "Private"}</p>
+				</div>
 			</div>
-			<div class="game-stats">			
-				<p>{dateTime(g.created_at)}</p>
-				<p>{g.rounds.length} Rounds</p>
-				<p>{g.play_count} Plays</p>
-				<p>{g.is_public ? "Public" : "Private"}</p>
-			</div>
+
+			{#if $session.user?.id === g.author.id}
+				<div class="card-bottom">
+					<a 
+						href={`/game/${g.id}/round/${g.rounds.length + 1}`}
+						style="width: max-content;"
+					>
+						Edit New Round
+					</a>
+					<LinkButton on:click={() => onDelete(g.id)}>Delete Game</LinkButton>
+				</div>
+			{/if}
 		</div>
 	{/each}
 </div>
@@ -57,14 +82,39 @@
 		width: 100%;
 	}
 
-	.game-card {
-		padding: .75em;
-		box-shadow: 0 0 .85em 0 gray;
-		color: rgb(50, 50, 50);
+	header {
 		display: flex;
 		justify-content: space-between;
+		align-items: center;
+		border-bottom: 1px solid lightgray;
+	}
+
+	.game-card {
+		box-shadow: 0 0 .85em 0 gray;
+		color: rgb(50, 50, 50);
 		border-radius: .5em;
+	}
+	
+	.card-top {
 		cursor: pointer;
+		padding: .75em;
+		display: flex;
+		justify-content: space-between;
+	}
+	
+	.game-description {
+		display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;  
+        overflow: hidden;
+        text-overflow: ellipsis;
+	}
+
+	.card-bottom {
+		display: flex;
+		gap: 1em;
+		padding: .25em .75em;
+		border-top: 1px solid lightgray;
 	}
 
 	b {
@@ -75,5 +125,6 @@
 	.game-stats {
 		text-align: right;
 		font-size: .85rem;
+		flex-shrink: 0;
 	}
 </style>

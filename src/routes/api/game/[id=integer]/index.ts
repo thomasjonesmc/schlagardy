@@ -7,9 +7,26 @@ export async function get({ params }) {
         .eq('id', params.id)
         .order('ordinal', {foreignTable: 'rounds'});
 
-    if (error) return { status: 401, body: error };
+    if (error || data.length === 0) {
+        return { status: 401, body: error };
+    }
 
     return {
-        body: data.length === 0 ? null : data[0]
+        body: data[0]
+    }
+}
+
+export async function del({ params }) {
+    const { data, error } = await supabase
+        .from('games')
+        .delete()
+        .eq('id', params.id);
+
+    if (error || data.length === 0) {
+        return { status: 401, body: error };
+    }
+
+    return {
+        body: data[0]
     }
 }

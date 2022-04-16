@@ -199,7 +199,7 @@ import Icon from "@iconify/svelte";
 
     .cell:hover {
         z-index: 999999;
-        /* transform: scale(1.2); */
+        transform: scale(1.2);
         box-shadow: 0 0 1em 0 black;
     }
 

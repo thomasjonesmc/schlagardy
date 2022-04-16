@@ -54,75 +54,66 @@
 </script>
 
 
-<div id="board-container">
-    <div 
-        id="board"
-        style={`
-            grid-template-rows: repeat(${board.rows.length + 1}, 1fr);
-            grid-template-columns: 50px repeat(${board.categories.length}, 1fr);
-        `}
-    >
+<div 
+    id="board"
+    style={`
+        grid-template-rows: repeat(${board.rows.length + 1}, 1fr);
+        grid-template-columns: 50px repeat(${board.categories.length}, 1fr);
+    `}
+>
+    <div class="row-cell">
+        <div class="controls">
+            <button type="button" on:click={() => addRow(-1)}>
+                <Icon icon="tabler:row-insert-bottom" />
+            </button>
+            <button type="button" on:click={() => addCol(-1)}>
+                <Icon icon="tabler:column-insert-right" />
+            </button> 
+        </div>
+    </div>
+    {#each board.rows as row, i}
         <div class="row-cell">
+            <input placeholder="value" bind:value={row} />
+
             <div class="controls">
-                <button type="button" on:click={() => addRow(-1)}>
-                    <Icon icon="tabler:row-insert-bottom" />
+                <button type="button" on:click={() => deleteRow(i)}>
+                    <Icon icon="ci:trash-full" />
                 </button>
-                <button type="button" on:click={() => addCol(-1)}>
+                <button type="button" on:click={() => addRow(i)}>
+                    <Icon icon="tabler:row-insert-bottom" />
+                </button> 
+            </div>
+        </div>
+    {/each}
+
+    {#each board.categories as cat, col}
+        <div class="col-cell">
+            <input placeholder="Category Name" bind:value={cat.category} />
+        
+            <div class="controls">
+                <button type="button" on:click={() => deleteCol(col)}>
+                    <Icon icon="ci:trash-full" />
+                </button>
+                <button type="button" on:click={() => addCol(col)}>
                     <Icon icon="tabler:column-insert-right" />
                 </button> 
             </div>
         </div>
-        {#each board.rows as row, i}
-            <div class="row-cell">
-                <input placeholder="value" bind:value={row} />
-
-                <div class="controls">
-                    <button type="button" on:click={() => deleteRow(i)}>
-                        <Icon icon="ci:trash-full" />
-                    </button>
-                    <button type="button" on:click={() => addRow(i)}>
-                        <Icon icon="tabler:row-insert-bottom" />
-                    </button> 
-                </div>
-            </div>
+        {#each cat.cells as cell, row}
+            <CellComponent 
+                bind:cell
+                bind:board
+                {row} {col} {cat} 
+                rowVal={board.rows[row]}
+            />
         {/each}
-
-        {#each board.categories as cat, col}
-            <div class="col-cell">
-                <input placeholder="Category Name" bind:value={cat.category} />
-            
-                <div class="controls">
-                    <button type="button" on:click={() => deleteCol(col)}>
-                        <Icon icon="ci:trash-full" />
-                    </button>
-                    <button type="button" on:click={() => addCol(col)}>
-                        <Icon icon="tabler:column-insert-right" />
-                    </button> 
-                </div>
-            </div>
-            {#each cat.cells as cell, row}
-                <CellComponent 
-                    bind:cell
-                    bind:board
-                    {row} {col} {cat} 
-                    rowVal={board.rows[row]}
-                />
-            {/each}
-        {/each}
-    </div>
+    {/each}
 </div>
 
 <!-- <pre>{JSON.stringify(board, null, 4)}</pre> -->
 
 <style>
     /* only exists to add padding to board so controls dont overflow screen */
-    #board-container {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        padding: 0 1em 1em 1em;
-    }  
 
     #board {
         flex: 1;

@@ -1,3 +1,10 @@
+export async function get(endpoint: string) {
+	return fetch(endpoint, {
+		method: 'GET',
+		credentials: 'include'
+	}).then((r) => r.json());
+}
+
 export async function post(endpoint: string, data: unknown = {}) {
 	return fetch(endpoint, {
 		method: 'POST',
@@ -20,10 +27,14 @@ export async function put(endpoint: string, data: unknown = {}) {
 	}).then((r) => r.json());
 }
 
-export async function get(endpoint: string) {
+export async function del(endpoint: string, data: unknown = {}) {
 	return fetch(endpoint, {
-		method: 'GET',
-		credentials: 'include'
+		method: 'DELETE',
+		credentials: 'include',
+		body: JSON.stringify(data),
+		headers: {
+			'Content-Type': 'application/json'
+		}
 	}).then((r) => r.json());
 }
 
@@ -49,4 +60,10 @@ export function capitalize(str: string): string {
 	const [ first, ...rest ] = str;
 
 	return first.toUpperCase() + rest.join("");
+}
+
+// for use on html element
+export function isOverflown(e: HTMLElement) {
+	if (!e) return false;
+    return e.scrollHeight > e.clientHeight || e.scrollWidth > e.clientWidth;
 }

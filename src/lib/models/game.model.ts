@@ -11,6 +11,7 @@ export default class Game {
     play_count: number;
     image_url: string;
     updated_at: string;
+    user_id: string;
     author: User;
     rounds: Array<Round>;
 

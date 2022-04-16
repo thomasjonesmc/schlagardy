@@ -94,13 +94,11 @@
 	}
 
 	async function goPrevious() {
-		await saveRound();
 		ordinal--;
 		goto(`/game/${game.id}/round/${ordinal}`);
 	}
 
 	async function goNext() {
-		await saveRound();
 		ordinal++;
 		goto(`/game/${game.id}/round/${ordinal}`);
 	}
@@ -199,6 +197,7 @@
 		margin: 0 auto;
 		flex: 1;
 		width: 100%;
+		padding: 0 1em;
 	}
 	
 	#rounds-nav {
