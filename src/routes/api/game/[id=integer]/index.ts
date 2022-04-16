@@ -1,9 +1,10 @@
 import supabase from '$lib/db';
+import User from '$lib/models/user.model';
 
 export async function get({ params }) {
     const { data, error } = await supabase
         .from('games')
-        .select('*, rounds(*)')
+        .select('*, rounds(*), author:profiles(*)')
         .eq('id', params.id)
         .order('ordinal', {foreignTable: 'rounds'});
 
@@ -11,8 +12,11 @@ export async function get({ params }) {
         return { status: 401, body: error };
     }
 
+    let game = data[0];
+    game.author = new User(game.author).toPOJO();
+
     return {
-        body: data[0]
+        body: game
     }
 }
 

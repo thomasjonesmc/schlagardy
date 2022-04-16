@@ -1,9 +1,6 @@
 <script lang="ts" context="module">
     export async function load({ session, params, fetch }) {
 
-		if (!session.user) {
-			return { status: 302, redirect: `/signin?goto=/game/${params.id}` };
-		}
 
 		const response = await fetch(`/api/game/${params.id}`);
 
@@ -33,7 +30,7 @@
 	import Button from "$lib/components/Buttons/Button.svelte";
 	import ButtonLink from "$lib/components/Buttons/ButtonLink.svelte";
 	import LinkButton from "$lib/components/Buttons/LinkButton.svelte";
-	import { del, isOverflown } from "$lib/util";
+	import { date, del, isOverflown } from "$lib/util";
 	import type Game from "$lib/models/game.model";
 	import User from "$lib/models/user.model";
 	import { onMount } from "svelte";
@@ -43,6 +40,8 @@
 	let ordinal = game.rounds.length + 1;
 	let overflown = true;
 	let description: HTMLParagraphElement;
+
+	let me = $session.user?.id === game.author.id;
 
 	async function onDelete() {
 		const res = await del(`/api/game/${game.id}`);
@@ -59,51 +58,65 @@
 <div id="page">
 	<header>
 		<h1>{game.title}</h1>
+		<div id="sub-header">
+			<p>{game.play_count} Plays</p>
+			<Icon icon="ci:dot-03-m" />
+			<p>{date(game.created_at)}</p>
+		</div>
 	</header>
 
-	{#if game.description}
-		 <p class="description" 
-		 	bind:this={description}
-			class:overflown
-		>
-			{game.description}
-		</p>
-		 {#if description && isOverflown(description)}
-			<LinkButton on:click={() => overflown = !overflown} style="color: gray;">
-				{overflown ? "Show More" : "Show Less"}
-			</LinkButton>
-		 {/if}
-	{/if}
-
-	<p>{game.rounds.length} {game.rounds.length === 1 ? "Round" : 'Rounds'}</p>
-	
-	<div id="rounds">
-
-		{#each game.rounds as r, i}
-			<ButtonLink
-				style="min-width: max-content; flex: 1;"
-				href={`/game/${game.id}/round/${r.ordinal}`}
+	<section id="description">
+		<b>
+			<a href={`/user/${game.author.username}`}>{game.author.displayName}</a>
+		</b>
+		{#if game.description}
+			<p 
+				bind:this={description}
+				class:overflown
 			>
-				<b>Round {i + 1}</b>
-				<p>{r.title || "Unnamed Round"}</p>
-				<p id="board-size">Board Size {r.board.rows.length} x {r.board.categories.length}</p>
-			</ButtonLink>
-		{/each}
-	</div>
+				{game.description}
+			</p>
+			{#if description && isOverflown(description)}
+				<LinkButton on:click={() => overflown = !overflown} style="color: gray;">
+					{overflown ? "Show More" : "Show Less"}
+				</LinkButton>
+			{/if}
+		{/if}
+	</section>
 
-	{#if $session.user?.id === game?.user_id} 
-		<ButtonLink 
-			href={`/game/${$session.game.id}/round/${ordinal}`}
-			style="width: max-content;"
-		>
-			Add New Round
-		</ButtonLink>
-	{/if}
+	<section id="rounds">
+		<p>{game.rounds.length} {game.rounds.length === 1 ? "Round" : 'Rounds'}</p>
+		
+		<div id="round-links">
+			{#each game.rounds as r, i}
+				<ButtonLink
+					style="min-width: max-content; flex: 1;"
+					href={`/game/${game.id}/round/${r.ordinal}`}
+				>
+					<b>Round {i + 1}</b>
+					<p>{r.title || "Unnamed Round"}</p>
+					<p id="board-size">Board Size {r.board.rows.length} x {r.board.categories.length}</p>
+				</ButtonLink>
+			{/each}
+		</div>
+
+		{#if me}
+			<ButtonLink 
+				href={`/game/${$session.game.id}/round/${ordinal}`}
+				style="width: max-content;"
+			>
+				Add New Round
+			</ButtonLink>
+		{/if}
+	</section>
+
 	
-	<div id="options">
+	<section id="options">
 		<a href="/browse">Back to Games</a>
-		<LinkButton on:click={onDelete}>Delete Game</LinkButton>
-	</div>
+		{#if me}
+			<LinkButton on:click={onDelete}>Delete Game</LinkButton>
+		{/if}
+	</section>
 	
 	<!-- <pre>{JSON.stringify(game, null, 4)}</pre> -->
 </div>
@@ -112,22 +125,29 @@
 <style>
 
 	header {
-		display: flex;
-		gap: 1em;
-		align-items: flex-end;
 		border-bottom: 1px solid lightgray;
+		border-top: 1px solid lightgray;
+		padding: .5em;
+	}
+
+	#sub-header {
+		color: gray;
+		display: flex;
+		font-size: .9rem;
+		align-items: center;
+		gap: .25em;
 	}
 
 	#page {
 		display: grid;
-		gap: .5em;
 		margin: 0 auto;
 		max-width: 600px;
 		width: 100%;
 	}
 
-	.description {
-		color: gray;
+	#description {
+		padding: 1em .5em;
+		border-bottom: 1px solid lightgray;
 	}
 	
 	.overflown {
@@ -139,12 +159,19 @@
 	}
 
 	#rounds {
+		padding: .5em;
+		display: grid;
+		gap: .5em;
+	}
+
+	#round-links {
 		display: flex;
 		flex-wrap: wrap;
 		gap: .5em;
 	}
 
 	#options {
+		padding: 0 .5em;
 		display: flex;
 		gap: .75em;
 		align-items: center;

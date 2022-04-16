@@ -20,7 +20,7 @@
 	import { session } from "$app/stores";
 	import Button from "$lib/components/Buttons/Button.svelte";
 	import ButtonLink from "$lib/components/Buttons/ButtonLink.svelte";
-import LinkButton from "$lib/components/Buttons/LinkButton.svelte";
+	import LinkButton from "$lib/components/Buttons/LinkButton.svelte";
 	import type Game from "$lib/models/game.model";
 	import { dateTime, del } from "$lib/util";
 
