@@ -34,6 +34,8 @@
 	import type Game from "$lib/models/game.model";
 	import User from "$lib/models/user.model";
 	import { onMount } from "svelte";
+import RoundCard from "./_RoundCard.svelte";
+import { round } from "lodash";
 
 	export let game: Game;
 
@@ -89,20 +91,13 @@
 		
 		<div id="round-links">
 			{#each game.rounds as r, i}
-				<ButtonLink
-					style="min-width: max-content; flex: 1;"
-					href={`/game/${game.id}/round/${r.ordinal}`}
-				>
-					<b>Round {i + 1}</b>
-					<p>{r.title || "Unnamed Round"}</p>
-					<p id="board-size">Board Size {r.board.rows.length} x {r.board.categories.length}</p>
-				</ButtonLink>
+				<RoundCard round={r} {game} />
 			{/each}
 		</div>
 
 		{#if me}
 			<ButtonLink 
-				href={`/game/${$session.game.id}/round/${ordinal}`}
+				href={`/game/${$session.game.id}/round/create`}
 				style="width: max-content;"
 			>
 				Add New Round
@@ -175,10 +170,5 @@
 		display: flex;
 		gap: .75em;
 		align-items: center;
-	}
-
-	#board-size {
-		color: gray;
-		font-size: .9rem;
 	}
 </style>

@@ -4,16 +4,32 @@
     export let id: string;
     export let cssClass: string = undefined;
     export let label = id.split("-").map(capitalize).join(" ");
+    export let alt: string = null;
 </script>
 
 <div class={cssClass}>
-    <label for={id}>{label}</label>
+    <div class="label-container">
+        <label for={id}>{label}</label>
+        {#if alt}
+            <p>{alt}</p>
+        {/if}
+    </div>
     <slot />
 </div>
 
 <style>
     div {
         display: grid;
+    }
+
+    .label-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .label-container p {
+        color: gray;
     }
 
     .checkbox-row {
