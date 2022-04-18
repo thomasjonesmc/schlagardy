@@ -6,6 +6,9 @@
     }
 </script>
 
+<script>
+    import "./cell.css";
+</script>
 
 <slot></slot>
 

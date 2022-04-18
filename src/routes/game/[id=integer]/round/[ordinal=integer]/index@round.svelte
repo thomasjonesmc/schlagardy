@@ -15,13 +15,41 @@
 	import { scale } from 'svelte/transition';    
     import type { Cell, Round } from "$lib/models/game.model";
     import type Game from "$lib/models/game.model";
+    import { getCellClass } from "./_util";
+    import Board from "./edit/_Board.svelte";
+    import Icon from "@iconify/svelte";
 
-    export let round: Round;
+
     export let numRows: number;
     export let numCols: number;
+    export let round: Round;
+
+    let board = round.board;
     // export let game: Game;
+    let overlay = null;
+    let showQuestion = true;
+    let spin = false;
 
     let cell: Cell = null;
+
+    $: disabled = !!cell;
+
+    function showAnswer() {
+        if (spin) return;
+
+        spin = !spin;
+        showQuestion = !showQuestion;
+
+        setTimeout(() => {
+            spin = !spin;
+        }, 750);
+
+    }
+
+    function closeOverlay() {
+        showQuestion = true;
+        cell = null;
+    }
 
 </script>
 
@@ -35,12 +63,12 @@
     >
 
         {#each round.board.categories as cat, c}
-            <div class="category cell">
+            <div class="category">
                 <p>{cat.category}</p>
             </div>
             {#each cat.cells as cl, r}
-                <div class="cell question">
-                    <button on:click={() => cell = cl}>
+                <div class={`cell ${getCellClass(cl, board, r, c)}`}>
+                    <button on:click={() => cell = cl} {disabled}>
                         <p>{round.board.rows[r]}</p>
                     </button>
                 </div>
@@ -49,10 +77,19 @@
 
     </div>
     {#if cell}
-        <div id="overlay" transition:scale|local={{duration: 1000}}>
-            HELLO
-            <button on:click={() => cell = null}>Close</button>
-            <p>{cell.question || "No Question"}</p>
+        <div id="overlay" class:spin transition:scale|local={{duration: 1000}}>
+            <button id="exit-button" on:click={closeOverlay} disabled={spin}>
+                <Icon icon="heroicons-solid:x" />
+            </button>
+
+            <button id="overlay-toggle" on:click={showAnswer}>
+                {#if showQuestion}
+                    <p>{cell.question || "No Question"}</p>
+                {:else}
+                    <p>{cell.answer || "No Answer"}</p>
+                {/if}
+            </button>
+
         </div>
     {/if}
 </div>
@@ -75,14 +112,14 @@
         grid-auto-flow: column;
     }
 
-    .cell {
+    .cell, .category {
         text-align: center;
         background-color: hsl(200, 15%, 15%);
         font-size: 2rem;
         font-weight: bold;
     }
     
-    .cell p {
+    .cell p, .category p {
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;  
@@ -124,6 +161,71 @@
         left: 0;
         right: 0;
         background-color: black;
-        opacity: 90%;
+        opacity: 95%;
+        display: flex;
+        flex-direction: column;
+        gap: 50px;
+        font-size: 5rem;
+
+    }
+    
+    .spin {
+        animation-name: spin;
+        animation-duration: 750ms;
+        /* animation-iteration-count: infinite; */
+        animation-timing-function: linear;
+    }
+
+    #exit-button {
+        position: absolute;
+        top: 25px;
+        right: 25px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: none;
+        font-size: xx-large;
+        display: grid;
+        place-content: center;
+        color: black;
+        opacity: 100%;
+    }
+
+    #overlay-toggle {
+        width: 100%;
+        height: 100%;
+        background-color: inherit;
+        color: inherit;
+        border: none;
+    }
+
+    .top-half, .bottom-half {
+        flex: 1;
+        padding: 1em;
+        display: flex;
+        justify-content: center;
+    }
+
+    .top-half {
+        align-items: flex-end;
+        background-color: green;
+    }
+
+    .bottom-half {
+        background-color: red;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotateY(0deg);
+        }
+
+        50% {
+            transform: rotateY(180deg);
+        }
+
+        100% {
+            transform: rotateY(360deg);
+        }
     }
 </style>

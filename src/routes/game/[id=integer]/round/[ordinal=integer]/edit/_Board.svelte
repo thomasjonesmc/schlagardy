@@ -105,8 +105,7 @@
                 bind:cell
                 bind:board
                 {showQuestions}
-                {row} {col} {cat} 
-                rowVal={board.rows[row]}
+                {row} {col}
             />
         {/each}
     {/each}
