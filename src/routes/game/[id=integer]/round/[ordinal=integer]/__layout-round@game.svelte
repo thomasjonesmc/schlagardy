@@ -1,4 +1,4 @@
-<script lang="ts" context="module">
+<script context="module" lang="ts">
     import { layoutLoad } from "./_load";
 
     export async function load(params) {
@@ -8,3 +8,4 @@
 
 
 <slot></slot>
+

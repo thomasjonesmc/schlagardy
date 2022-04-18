@@ -1,20 +1,9 @@
 <script lang="ts" context="module">
-	import { Category, Cell, type Round } from "$lib/models/game.model";
-
     export async function load({ session, fetch, params, stuff }) {
-
-		let ordinal = parseInt(params.ordinal);
-        const roundExists = session.game.rounds.find((r: Round) => r.ordinal === ordinal);
-
-		if (!roundExists) {
-			return {
-				status: 404
-			}
-		}
-
 		return {
 			props: {
-				ordinal,
+				ordinal: stuff.ordinal,
+				round: stuff.round,
 				game: session.game
 			}
 		};
@@ -24,19 +13,16 @@
 <script lang="ts">
 	import SubmitButton from "$lib/components/Buttons/SubmitButton.svelte";
 	import Board from "./_Board.svelte";
-	import type Game from "$lib/models/game.model";
+	import Game, { Round, Category, Cell } from "$lib/models/game.model";
 	import { put } from "$lib/util";
-	import { afterNavigate, goto } from "$app/navigation";
+	import { goto } from "$app/navigation";
 	import LinkButton from "$lib/components/Buttons/LinkButton.svelte";
 	import Button from "$lib/components/Buttons/Button.svelte";
-	import { page, session } from "$app/stores";
-	import Spinner from "$lib/components/Loading/Spinner.svelte";
 	import { isEqual } from "lodash";
 
 	export let ordinal: number;
 	export let game: Game;
-	
-	$: round = game.rounds.find(r => r.ordinal === ordinal);
+	export let round: Round;
 
 	let saving = false;
 	let showQuestions = true;

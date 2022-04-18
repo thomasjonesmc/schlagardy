@@ -167,7 +167,7 @@
         transform-origin: bottom right;
     }
 
-    .cell:hover {
+    .cell:hover, .cell:focus-within {
         z-index: 999999;
         transform: scale(1.2);
         box-shadow: 0 0 1em 0 black;
