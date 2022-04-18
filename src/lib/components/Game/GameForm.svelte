@@ -9,7 +9,7 @@
 	export let game: Game;
     export let onSubmit: () => Promise<void>;
     export let style = "";
-	export let title = undefined;
+	export let title: string = undefined;
 
 	let error = null;
 	let submitting = false;
@@ -25,11 +25,9 @@
 	}
 </script>
 
-<Form on:submit={baseSubmit} style={`width: 100%;${style}`}>
+<Form on:submit={baseSubmit} {title} style={`width: 100%;${style}`}>
 
-	<h1>
-		<a href={`/game/${game.id}`}>Edit: {game.title}</a>
-	</h1>
+	<slot></slot>
 
 	<InputRow id="title" bind:value={game.title} />
 	<TextAreaRow id="description" bind:value={game.description} />

@@ -33,7 +33,9 @@
 			game.description !== orig.description ||
 			game.is_public !== orig.is_public)
 		{
-			cancel();
+			// unsaved changes. very annoying during development
+			// could probably do a .env.DEV check
+			// cancel();
 		} 
 	});
 
@@ -47,11 +49,14 @@
 <Page>
 	
 	<GameForm
-		title={`Edit: ${game.title}`}
 		{onSubmit} 
 		bind:game={game} 
 		style="max-width: 100%;"
-	/>
+	>
+		<h1>
+			<a href={`/game/${game.id}`}>Edit: {game.title}</a>
+		</h1>
+	</GameForm>
 
 	<!-- <Header /> -->
 	
@@ -63,3 +68,15 @@
 
 	<!-- <pre>{JSON.stringify(game, null, 4)}</pre> -->
 </Page>
+
+<style>
+
+	h1 {
+		overflow: hidden;
+	}
+
+	h1 a {
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+</style>
