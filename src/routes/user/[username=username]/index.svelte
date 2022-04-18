@@ -9,7 +9,13 @@
             return { status: 404 }
         }
 
-        return { props: data };
+        const { user } = data;
+
+        if (!user.isPublic) {
+            return { status: 401 }
+        }
+
+        return { props: { user } };
     }
 
 </script>

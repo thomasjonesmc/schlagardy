@@ -1,7 +1,7 @@
 <script lang="ts">
-    import { goto } from "$app/navigation";
+    import { beforeNavigate, goto } from "$app/navigation";
 
-    import { session } from "$app/stores";
+    import { page, session } from "$app/stores";
     import LinkButton from "$lib/components/Buttons/LinkButton.svelte";
     import { post } from "$lib/util";
 
@@ -23,10 +23,10 @@
         <LinkButton on:click={signOut} disabled={signingOut}>
             Sign Out
         </LinkButton>
-        <a href="/profile">Profile</a>
+        <a href="/profile">{$session.user.displayName}</a>
     {:else}
-        <a href="/signup">Sign Up</a>
-        <a href="/signin">Sign In</a>
+        <a href={`/signup`}>Sign Up</a>
+        <a href={`/signin`}>Sign In</a>
     {/if}
 </header>
 

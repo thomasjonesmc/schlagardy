@@ -1,19 +1,25 @@
 <script lang="ts">
+import { goto } from "$app/navigation";
+
     import { session } from "$app/stores";
 
     import type Game from "$lib/models/game.model";
 
     import type { Round } from "$lib/models/game.model";
-import Icon from "@iconify/svelte";
+    import Icon from "@iconify/svelte";
 
     export let game: Game;
     export let round: Round;
 
     let href = `/game/${game.id}/round/${round.ordinal}`;
+
+    function onClick() {
+        goto(href);
+    }
 </script>
 
 
-<div class="round">
+<div class="round" on:click={onClick}>
     <a {href}>
         <b>Round {round.ordinal}</b>
     </a>
@@ -23,7 +29,7 @@ import Icon from "@iconify/svelte";
     {#if $session.user?.id === game.author.id}
         <div class="round-controls">
             <a href={`${href}/edit`}><Icon icon="ci:edit" /></a>
-            <button on:click={() => null}><Icon icon="bi:trash-fill" /></button>
+            <button type="button" on:click|stopPropagation={() => null}><Icon icon="bi:trash-fill" /></button>
         </div>
     {/if}
 </div>
@@ -32,10 +38,12 @@ import Icon from "@iconify/svelte";
     .round {
         position: relative;
         flex: 1;
-        max-width: max-content;
+        min-width: fit-content;
+        /* max-width: max-content; */
         padding: .5em;
         border: 1px solid lightgray;
         border-radius: .25em;
+        cursor: pointer;
     }
 
     .board-size {

@@ -4,9 +4,9 @@ export default class Game {
 
     id: number;
     created_at: string;
-    title: string;
-    description: string;
-    is_public: boolean;
+    title = '';
+    description = '';
+    is_public = true;
     is_in_progress: boolean;
     play_count: number;
     image_url: string;
@@ -28,7 +28,11 @@ export class Round {
 }
 
 export class Board {
-    constructor(rows: number, cols: number, rowStart: number = 100, rowIncrement: number = rowStart) {
+    
+    rows: Array<number>;
+    categories: Array<Category>;
+
+    constructor(rows: number, cols: number, rowStart = 100, rowIncrement = rowStart) {
         this.categories = [];
         this.rows = [];
 
@@ -40,12 +44,12 @@ export class Board {
             this.rows[i] = i * rowIncrement + rowStart;
         }
     }
-
-    rows: Array<number>;
-    categories: Array<Category>;
 }
 
 export class Category {
+
+    category: string;
+    cells: Array<Cell>;
 
     constructor(cells: number, category='') {
         this.category = category;
@@ -55,12 +59,13 @@ export class Category {
             this.cells[i] = new Cell();
         }
     }
-
-    category: string;
-    cells: Array<Cell>;
 }
 
 export class Cell {
+    
+    question: string;
+    answer: string;
+    isDailyDouble: boolean;
 
     constructor(question='', answer='', isDailyDouble=false) {
         this.question = question;
@@ -68,7 +73,4 @@ export class Cell {
         this.isDailyDouble = isDailyDouble;
     }
 
-    question: string;
-    answer: string;
-    isDailyDouble: boolean;
 }

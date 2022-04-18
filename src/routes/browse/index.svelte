@@ -29,7 +29,6 @@
 	async function onDelete(id: number) {
 		const res = await del(`/api/game/${id}`);
 		games = games.filter(g => g.id !== id);
-		if ($session.game?.id === id) $session.game = null;
 	}
 </script>
 
@@ -60,11 +59,11 @@
 
 			{#if $session.user?.id === g.author.id}
 				<div class="card-bottom">
-					<a 
-						href={`/game/${g.id}/round/${g.rounds.length + 1}`}
-						style="width: max-content;"
-					>
-						Edit New Round
+					<a href={`/game/${g.id}/round/create`}>
+						Add New Round
+					</a>
+					<a href={`/game/${g.id}/edit`}>
+						Edit Game
 					</a>
 					<LinkButton on:click={() => onDelete(g.id)}>Delete Game</LinkButton>
 				</div>
@@ -112,7 +111,7 @@
 
 	.card-bottom {
 		display: flex;
-		gap: 1em;
+		gap: .5em;
 		padding: .25em .75em;
 		border-top: 1px solid lightgray;
 	}

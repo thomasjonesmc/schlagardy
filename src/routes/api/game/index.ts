@@ -22,9 +22,11 @@ export async function get({ locals: { user } }) {
 	};
 }
 
-export async function post({ request }) {
+export async function post({ request, locals }) {
 
-	const { title, description, public: is_public, userId: user_id } = await request.json();
+    const { id: user_id } = locals.user;
+
+	const { title, description, is_public } = await request.json();
 
 	const { data, error } = await supabase
         .from('games')

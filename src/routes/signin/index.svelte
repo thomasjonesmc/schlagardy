@@ -19,7 +19,6 @@
     import Form from "$lib/components/Form/Form.svelte";
     import EmailRow from "$lib/components/Form/EmailRow.svelte";
     import PasswordRow from "$lib/components/Form/PasswordRow.svelte";
-    import User from "$lib/models/user.model";
 
     let submitting = false;
     let email = "";

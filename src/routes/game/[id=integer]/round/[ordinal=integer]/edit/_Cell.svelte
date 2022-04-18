@@ -1,6 +1,5 @@
 <script lang="ts">
     import type { Board, Category, Cell } from "$lib/models/game.model";
-import Icon from "@iconify/svelte";
     import Dialog from "./_Dialog.svelte";
 
     export let board: Board;
@@ -78,15 +77,6 @@ import Icon from "@iconify/svelte";
             <p>{rowVal}</p>
         {/if}
     </button>
-
-    <div class="cell-controls">
-        <button>
-            <Icon icon="tabler:row-insert-bottom" />
-        </button>
-        <button>
-            <Icon icon="tabler:column-insert-right" />
-        </button>
-    </div>
 </div>
 
 <Dialog
@@ -126,29 +116,6 @@ import Icon from "@iconify/svelte";
         text-overflow: ellipsis;
     }
 
-    .cell-controls {
-        display: none;
-        right: 1em;
-        border-radius: .25em;
-        border: 1px solid rgb(20, 20, 20);
-        background-color: rgb(43, 43, 43);
-        color: rgb(189, 189, 189);
-        transform: translateY(-50%);
-        position: absolute;
-        font-size: large;
-        overflow: hidden;
-    }
-
-    .cell-controls button {
-        padding: .1em;
-        color: inherit;
-        background-color: inherit;
-        border: none;
-    }
-
-    .cell-controls button:hover {
-        filter: brightness(120%);
-    }
 
     .finished {
         background-color: lightgreen;
@@ -201,9 +168,8 @@ import Icon from "@iconify/svelte";
         z-index: 999999;
         transform: scale(1.2);
         box-shadow: 0 0 1em 0 black;
+        border-radius: .25em;
+        overflow: hidden;
     }
 
-    .cell:hover .cell-controls {
-        display: flex;
-    }
 </style>

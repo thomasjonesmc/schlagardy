@@ -12,7 +12,7 @@ export async function get({ params }) {
         return { status: 401, body: error };
     }
 
-    let game = data[0];
+    const game = data[0];
     game.author = new User(game.author).toPOJO();
 
     return {
@@ -29,6 +29,20 @@ export async function del({ params }) {
     if (error || data.length === 0) {
         return { status: 401, body: error };
     }
+
+    return {
+        body: data[0]
+    }
+}
+
+export async function put({ params, request }) {
+
+    const { title, description, is_public } = await request.json();
+
+    const { data } = await supabase
+        .from('games')
+        .update({title, description, is_public})
+        .eq('id', params.id);
 
     return {
         body: data[0]

@@ -53,8 +53,6 @@
 	}
 
 	async function addRound() {
-		ordinal = game.rounds.length + 1;
-		$session.game = game;
 		goto(`/game/${game.id}/round/create`);
 	}
 
@@ -95,8 +93,6 @@
 		if (cats.length !== prevCats.length) return true;
 		if (rows.length !== prevRows.length) return true;
 		
-		console.log(rows.length, prevRows.length);
-
 		if (!isEqual(rows, prevRows)) return true;
 
 		// check cat categories same
@@ -119,37 +115,30 @@
 
 </script>
 
-{#if !game}
-	<h1>Can't Find Game</h1>
-{:else if !round}
-	<div style="display: grid; place-content: center;">
-		<Spinner />
+
+<form on:submit|preventDefault={onSubmit} id="page">
+	<header>
+		<h1>
+			<a href={`/game/${game.id}`}>{game.title}</a>
+		</h1>
+		<div id="rounds-nav">
+			<LinkButton on:click={goPrevious} disabled={ordinal === 1}>Prev</LinkButton>
+			<p>Round {round.ordinal} of {game.rounds.length}</p>
+			<LinkButton on:click={goNext} disabled={ordinal === game.rounds.length}>Next</LinkButton>
+		</div>
+	</header>
+	<div id="round-buttons">
+		<SubmitButton disabled={saving}>Save Changes</SubmitButton>
+		<Button disabled={saving} on:click={addRound}>Add Round</Button>
+		<Button disabled={saving} on:click={addRow}>Add Row</Button>
+		<Button disabled={saving} on:click={addCategory}>Add Category</Button>
 	</div>
-{:else}
-	<form on:submit|preventDefault={onSubmit} id="page">
-		<header>
-			<h1>
-				<a href={`/game/${game.id}`}>{game.title}</a>
-			</h1>
-			<div id="rounds-nav">
-				<LinkButton on:click={goPrevious} disabled={ordinal === 1}>Prev</LinkButton>
-				<p>Round {round.ordinal} of {game.rounds.length}</p>
-				<LinkButton on:click={goNext} disabled={ordinal === game.rounds.length}>Next</LinkButton>
-			</div>
-		</header>
-		<div id="round-buttons">
-			<SubmitButton disabled={saving}>Save Changes</SubmitButton>
-			<Button disabled={saving} on:click={addRound}>Add Round</Button>
-			<Button disabled={saving} on:click={addRow}>Add Row</Button>
-			<Button disabled={saving} on:click={addCategory}>Add Category</Button>
-		</div>
-		<div id="input-container">
-			<input type="text" placeholder="Round Title" bind:value={round.title} />
-		</div>
-	
-		<Board bind:board={round.board} {ordinal} />
-	</form>
-{/if}
+	<div id="input-container">
+		<input type="text" placeholder="Round Title" bind:value={round.title} />
+	</div>
+
+	<Board bind:board={round.board} {ordinal} />
+</form>
 
 <!-- <pre>{JSON.stringify(round, null, 4)}</pre> -->
 
