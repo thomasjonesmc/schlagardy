@@ -39,6 +39,7 @@
 	$: round = game.rounds.find(r => r.ordinal === ordinal);
 
 	let saving = false;
+	let showQuestions = true;
 
 	async function saveRound() {
 		saving = true;
@@ -132,12 +133,16 @@
 		<Button disabled={saving} on:click={addRound}>Add Round</Button>
 		<Button disabled={saving} on:click={addRow}>Add Row</Button>
 		<Button disabled={saving} on:click={addCategory}>Add Category</Button>
+		<div id="qa-toggle">
+			<label for="show-type">Toggle Q/A</label>
+			<input id="show-type" type="checkbox" bind:checked={showQuestions} />
+		</div>
 	</div>
 	<div id="input-container">
 		<input type="text" placeholder="Round Title" bind:value={round.title} />
 	</div>
 
-	<Board bind:board={round.board} {ordinal} />
+	<Board bind:board={round.board} {ordinal} {showQuestions} />
 </form>
 
 <!-- <pre>{JSON.stringify(round, null, 4)}</pre> -->
@@ -172,7 +177,7 @@
 		max-width: 800px;
 	}
 
-	input {
+	#input-container input {
 		padding: .35em;
 		font-size: 1.25rem;
 		flex: 1;
@@ -185,5 +190,12 @@
 		display: flex;
 		justify-content: center;
 		gap: 1em;
+	}
+
+	#qa-toggle {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: flex-start;
 	}
 </style>

@@ -8,6 +8,7 @@
     export let row: number;
     export let col: number;
     export let rowVal: number;
+    export let showQuestions: boolean;
 
     let dialog;
 
@@ -71,8 +72,10 @@
         on:click={openModal} 
         type="button"
     >
-        {#if cell.question}
+        {#if cell.question && showQuestions}
             <p>{cell.question}</p>
+        {:else if cell.answer && !showQuestions}
+            <p>{cell.answer}</p>
         {:else}
             <p>{rowVal}</p>
         {/if}
