@@ -14,13 +14,13 @@ import { goto } from "$app/navigation";
     let href = `/game/${game.id}/round/${round.ordinal}`;
 
     function onClick() {
-        goto(href);
+        goto(`${href}/preview`);
     }
 </script>
 
 
 <div class="round" on:click={onClick}>
-    <a {href}>
+    <a href={`${href}/preview`}>
         <b>Round {round.ordinal}</b>
     </a>
     <p>{round.title || "Unnamed Round"}</p>

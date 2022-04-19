@@ -5,6 +5,7 @@
 
     export let board: Board;
     export let ordinal: number;
+    export let showQuestions: boolean;
 
     function editRow(row: number, removeAmount=0) {
 
@@ -103,8 +104,8 @@
             <CellComponent 
                 bind:cell
                 bind:board
-                {row} {col} {cat} 
-                rowVal={board.rows[row]}
+                {showQuestions}
+                {row} {col}
             />
         {/each}
     {/each}
