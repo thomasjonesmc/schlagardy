@@ -11,15 +11,16 @@
 
 
 <script lang="ts">
-	import { scale } from 'svelte/transition';    
-    import type { Cell, Round } from "$lib/models/game.model";
+	import { fly, scale, slide, fade } from 'svelte/transition';    
+    import { flip } from 'svelte/animate';
+    import type { Cell, Player, Round } from "$lib/models/game.model";
     import Icon from "@iconify/svelte";
     import CellComponent from './_Cell.svelte';
     import { beforeNavigate, goto } from '$app/navigation';
     import { session } from '$app/stores';
     import type Game from '$lib/models/game.model';
-import LinkButton from '$lib/components/Buttons/LinkButton.svelte';
-import Overlay from './_Overlay.svelte';
+    import LinkButton from '$lib/components/Buttons/LinkButton.svelte';
+import { shuffle } from '$lib/util';
 
     export let game: Game;
     export let ordinal: number;
@@ -33,12 +34,10 @@ import Overlay from './_Overlay.svelte';
     let activeCell: Cell = null;
     let activeRow: number;
     let activeCol: number;
+    let showPlayers = true;
+    let players = $session.players;
 
     $: disabled = !!activeCell;
-
-    // beforeNavigate(() => {
-    //     $session.game.rounds[ordinal - 1] = round;
-    // });
 
     function showAnswer() {
 
@@ -79,68 +78,161 @@ import Overlay from './_Overlay.svelte';
 </script>
 
 <div id="page">
-    <div 
-        id="board"
-        style={
-            `grid-template-rows: repeat(${numRows + 1}, 1fr);
-            grid-template-columns: repeat(${numCols}, 1fr);`
-        }
-    >
+    <div id="page-left">
 
-        {#each round.board.categories as cat, c}
-            <div class="category">
-                <p>{cat.category}</p>
-            </div>
-            {#each cat.cells as cl, r}
-                <CellComponent
-                    bind:cell={cl}
-                    {round} {disabled}
-                    row={r} col={c}
-                    onClick={() => openOverlay(cl, r, c)} 
-                />
+        <div 
+            id="board"
+            style={
+                `grid-template-rows: repeat(${numRows + 1}, 1fr);
+                grid-template-columns: repeat(${numCols}, 1fr);`
+            }
+        >
+
+            {#each round.board.categories as cat, c}
+                <div class="category">
+                    <p>{cat.category}</p>
+                </div>
+                {#each cat.cells as cl, r}
+                    <CellComponent
+                        bind:cell={cl}
+                        {round} {disabled}
+                        row={r} col={c}
+                        onClick={() => openOverlay(cl, r, c)} 
+                    />
+                {/each}
             {/each}
-        {/each}
+
+            
+            {#if activeCell}
+
+                <!-- <Overlay bind:activeCell bind:round {activeRow} {activeCol} /> -->
+
+                <!-- nesting at this depth prevents transition bugs?? -->
+                <div id="overlay" class:spin transition:scale={{duration: 1000}}>
+                    <button id="exit-button" on:click={closeOverlay} disabled={spin}>
+                        <Icon icon="heroicons-solid:x" />
+                    </button>
+
+                    <button id="overlay-toggle" on:click={showAnswer}>
+                        {#if showQuestion}
+                            <p>{activeCell.question || "No Question"}</p>
+                        {:else}
+                            <p>{activeCell.answer || "No Answer"}</p>
+                        {/if}
+                    </button>
+                </div>
+            {/if}
+        </div>
+
+        <div id="controls">
+            <label for="show-players">Show Players</label>
+            <input type="checkbox" id="show-players" bind:checked={showPlayers} />
+            <LinkButton on:click={goPrevious} disabled={ordinal === 1}>
+                Prev
+            </LinkButton>
+            <LinkButton on:click={goNext} disabled={ordinal === game.rounds.length}>
+                Next
+            </LinkButton>
+        </div>
 
     </div>
 
-    <div id="controls">
-        <LinkButton on:click={goPrevious} disabled={ordinal === 1}>
-            Prev
-        </LinkButton>
-        <LinkButton on:click={goNext} disabled={ordinal === game.rounds.length}>
-            Next
-        </LinkButton>
-    </div>
+    {#if showPlayers}
+        <div id="page-right" transition:scale|local>
+            <div id="player-controls">
 
-    {#if activeCell}
-
-        <!-- <Overlay bind:activeCell bind:round {activeRow} {activeCol} /> -->
-
-        <div id="overlay" class:spin transition:scale|local={{duration: 1000}}>
-            <button id="exit-button" on:click={closeOverlay} disabled={spin}>
-                <Icon icon="heroicons-solid:x" />
+            <button 
+                id="add-player"
+                on:click={() => players = [...players, { name: "", score: 0, id: Math.random() }]}
+                >
+                <Icon icon="ant-design:user-add-outlined" />
             </button>
 
-            <button id="overlay-toggle" on:click={showAnswer}>
-                {#if showQuestion}
-                    <p>{activeCell.question || "No Question"}</p>
-                {:else}
-                    <p>{activeCell.answer || "No Answer"}</p>
-                {/if}
+            <button on:click={() => players = shuffle(players)}>
+                <Icon icon='foundation:shuffle' />
             </button>
+        </div>
 
+            {#each players as p, i (p.id)}
+                <div id="player-card" animate:flip={{duration: 1000}} transition:slide={{duration: 500}}>
+                    <!-- <label for={`player-${p.id}`}>Player {i + 1}</label> -->
+                    <input id={`player-${p.id}`} type="text" bind:value={p.name} placeholder={`Player ${i + 1}`} />
+                    <button 
+                        id="delete-player" 
+                        on:click={() => players = players.filter(ply => ply.id !== p.id)}
+                    >
+                        <Icon icon="bi:trash-fill" />
+                    </button>
+                    <input type="number" bind:value={p.score} step={100} placeholder="Score" />
+                </div>
+            {/each}
         </div>
     {/if}
-</div>
 
+</div>
 
 <style>
     #page {
+        display: flex;
+        flex: 1;
+        color: lightgray;
+        background-color: hsl(200, 15%, 15%);
+        overflow: auto;
+    }
+
+    #page-left {
         flex: 1;
         display: flex;
         flex-direction: column;
-        color: lightgray;
-        background-color: hsl(200, 15%, 15%);
+    }
+
+    #page-right {
+        box-shadow: -10px 0px 10px -10px black;
+        padding: .5em;
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
+        overflow: auto;
+        position: sticky;
+        top: 0;
+    }
+
+    #player-card {
+        display: flex;
+        flex-direction: column;
+        border: 1px solid lightgray;
+        padding: .5em;
+        border-radius: .25em;
+        gap: 1em;
+        position: relative;
+    }
+
+    #player-controls {
+        display: flex;
+        gap: .5em;
+    }
+
+    #player-controls > button {
+        font-size: xx-large;
+        flex: 1;
+        font-size: xx-large;
+        border: none;
+        border-radius: .1em;
+        display: flex;
+        justify-content: center;
+    }
+
+    #delete-player {
+        position: absolute;
+        top: 0;
+        right: 1em;
+        transform: translateY(-50%);
+        border-radius: 50%;
+        border: none;
+        background-color: white;
+        color: black;
+        border: 1px solid black;
+        padding: .5em;
     }
 
     #board {
@@ -156,6 +248,11 @@ import Overlay from './_Overlay.svelte';
         background-color: hsl(200, 15%, 15%);
         font-size: 2rem;
         font-weight: bold;
+        
+        filter: brightness(150%);
+
+        position: sticky;
+        top: 0;
     }
     
     .category p {
@@ -178,10 +275,12 @@ import Overlay from './_Overlay.svelte';
         box-shadow: 0 -10px 5px -10px black;
         padding: 1em;
         gap: 1em;
+        position: sticky;
+        bottom: 0;
     }
 
     #overlay {
-        z-index: 2;
+        z-index: 500;
         position: fixed;
         top: 0;
         bottom: 0;
@@ -193,7 +292,7 @@ import Overlay from './_Overlay.svelte';
         flex-direction: column;
         gap: 50px;
         font-size: 5rem;
-
+        color: white;
     }
     
     .spin {
