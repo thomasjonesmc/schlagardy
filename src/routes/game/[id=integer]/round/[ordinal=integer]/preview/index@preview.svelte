@@ -1,6 +1,6 @@
 <script lang="ts" context="module">
     export async function load({ session, fetch, params, stuff }) {
-		return {
+        return {
 			props: {
 				...stuff,
 				game: session.game
@@ -11,30 +11,39 @@
 
 
 <script lang="ts">
-    import { session } from "$app/stores";
 	import { scale } from 'svelte/transition';    
     import type { Cell, Round } from "$lib/models/game.model";
-    import type Game from "$lib/models/game.model";
-    import { getCellClass } from "./_util";
-    import Board from "./edit/_Board.svelte";
     import Icon from "@iconify/svelte";
+    import CellComponent from './_Cell.svelte';
+    import { beforeNavigate, goto } from '$app/navigation';
+    import { session } from '$app/stores';
+    import type Game from '$lib/models/game.model';
+import LinkButton from '$lib/components/Buttons/LinkButton.svelte';
+import Overlay from './_Overlay.svelte';
 
-
+    export let game: Game;
+    export let ordinal: number;
     export let numRows: number;
     export let numCols: number;
     export let round: Round;
 
-    let board = round.board;
     // export let game: Game;
-    let overlay = null;
     let showQuestion = true;
     let spin = false;
+    let activeCell: Cell = null;
+    let activeRow: number;
+    let activeCol: number;
 
-    let cell: Cell = null;
+    $: disabled = !!activeCell;
 
-    $: disabled = !!cell;
+    // beforeNavigate(() => {
+    //     $session.game.rounds[ordinal - 1] = round;
+    // });
 
     function showAnswer() {
+
+        round.board.categories[activeCol].cells[activeRow].opened = true;
+
         if (spin) return;
 
         spin = !spin;
@@ -46,10 +55,26 @@
 
     }
 
+    function openOverlay(cell: Cell, r: number, c: number) {
+        activeRow = r;
+        activeCol = c;
+        activeCell = cell;
+    }
+
     function closeOverlay() {
         showQuestion = true;
-        cell = null;
+        activeCell = null;
     }
+
+    async function goPrevious() {
+		ordinal--;
+		goto(`/game/${game.id}/round/${ordinal}/preview`);
+	}
+
+	async function goNext() {
+		ordinal++;
+		goto(`/game/${game.id}/round/${ordinal}/preview`);
+	}
 
 </script>
 
@@ -67,16 +92,30 @@
                 <p>{cat.category}</p>
             </div>
             {#each cat.cells as cl, r}
-                <div class={`cell ${getCellClass(cl, board, r, c)}`}>
-                    <button on:click={() => cell = cl} {disabled}>
-                        <p>{round.board.rows[r]}</p>
-                    </button>
-                </div>
+                <CellComponent
+                    bind:cell={cl}
+                    {round} {disabled}
+                    row={r} col={c}
+                    onClick={() => openOverlay(cl, r, c)} 
+                />
             {/each}
         {/each}
 
     </div>
-    {#if cell}
+
+    <div id="controls">
+        <LinkButton on:click={goPrevious} disabled={ordinal === 1}>
+            Prev
+        </LinkButton>
+        <LinkButton on:click={goNext} disabled={ordinal === game.rounds.length}>
+            Next
+        </LinkButton>
+    </div>
+
+    {#if activeCell}
+
+        <!-- <Overlay bind:activeCell bind:round {activeRow} {activeCol} /> -->
+
         <div id="overlay" class:spin transition:scale|local={{duration: 1000}}>
             <button id="exit-button" on:click={closeOverlay} disabled={spin}>
                 <Icon icon="heroicons-solid:x" />
@@ -84,9 +123,9 @@
 
             <button id="overlay-toggle" on:click={showAnswer}>
                 {#if showQuestion}
-                    <p>{cell.question || "No Question"}</p>
+                    <p>{activeCell.question || "No Question"}</p>
                 {:else}
-                    <p>{cell.answer || "No Answer"}</p>
+                    <p>{activeCell.answer || "No Answer"}</p>
                 {/if}
             </button>
 
@@ -112,14 +151,14 @@
         grid-auto-flow: column;
     }
 
-    .cell, .category {
+    .category {
         text-align: center;
         background-color: hsl(200, 15%, 15%);
         font-size: 2rem;
         font-weight: bold;
     }
     
-    .cell p, .category p {
+    .category p {
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;  
@@ -132,25 +171,13 @@
         place-content: center;
     }
 
-    .question {
-        transition: transform .2s ease-out;
-    }
-
-    .question:hover {
-        z-index: 1;
-        transform: scale(1.2);
-        box-shadow: 0 0 1em 0 black;
-        border-radius: .25em;
-        overflow: hidden;
-    }
-
-    .cell button {
-        border-radius: 0;
-        border: none;
-        background-color: inherit;
-        color: inherit;
-        width: 100%;
-        height: 100%;
+    #controls {
+        display: flex;
+        justify-content: center;
+        background-color: hsl(200, 15%, 15%);
+        box-shadow: 0 -10px 5px -10px black;
+        padding: 1em;
+        gap: 1em;
     }
 
     #overlay {
@@ -197,22 +224,6 @@
         background-color: inherit;
         color: inherit;
         border: none;
-    }
-
-    .top-half, .bottom-half {
-        flex: 1;
-        padding: 1em;
-        display: flex;
-        justify-content: center;
-    }
-
-    .top-half {
-        align-items: flex-end;
-        background-color: green;
-    }
-
-    .bottom-half {
-        background-color: red;
     }
 
     @keyframes spin {

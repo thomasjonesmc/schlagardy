@@ -66,11 +66,13 @@ export class Cell {
     question: string;
     answer: string;
     isDailyDouble: boolean;
+    opened: boolean;
 
-    constructor(question='', answer='', isDailyDouble=false) {
+    constructor(question='', answer='', isDailyDouble=false, opened=false) {
         this.question = question;
         this.answer = answer;
         this.isDailyDouble = isDailyDouble;
+        this.opened = opened;
     }
 
 }
