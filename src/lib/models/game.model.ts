@@ -76,3 +76,11 @@ export class Cell {
     }
 
 }
+
+
+
+export type Player = {
+    name: string,
+    score: number,
+    id: number
+}

@@ -13,7 +13,8 @@ declare global {
 		// interface Platform {}
 		interface Session {
 			user: User,
-			game: Game
+			game: Game,
+			players: Array<players>
 		}
 		// interface Stuff {}
 	}
