@@ -14,16 +14,16 @@
             <ProfileRow label="Email" value={user.email} />
         {/if}
         <ProfileRow label="Username" value={user.username} />
-        <ProfileRow label="Display Name" value={user.displayName} />
-        <ProfileRow label="Account Created At" value={dateTime(user.createdAt)} />
-        <ProfileRow label="Last Sign In" value={dateTime(user.lastSignInAt)} />
-        <ProfileRow label="Account is Public" value={(String)(!!user.isPublic)} />
+        <ProfileRow label="Display Name" value={user.display_name} />
+        <ProfileRow label="Account Created At" value={dateTime(user.created_at)} />
+        <ProfileRow label="Last Sign In" value={dateTime(user.last_sign_in_at)} />
+        <ProfileRow label="Account is Public" value={(String)(!!user.is_public)} />
     </div>
 {/if}
 
-<!-- <pre>
+<pre>
     {JSON.stringify($session.user, null, 4)}
-</pre> -->
+</pre>
 
 <style>
     #profile {

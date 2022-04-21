@@ -7,7 +7,7 @@
 <div id="index">
     {#if $session.user}
         <!-- <h1>Welcome, {session.user.displayName}</h1> -->
-        <h1>Hello, {$session.user.displayName}</h1>
+        <h1>Hello, {$session.user.display_name}</h1>
     {:else}
         <h1>Welcome to Schlagardy</h1>
     {/if}

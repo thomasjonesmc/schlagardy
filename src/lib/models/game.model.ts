@@ -1,7 +1,7 @@
 import type User from "./user.model";
 
 export default class Game {
-
+    
     id: number;
     created_at: string;
     title = '';

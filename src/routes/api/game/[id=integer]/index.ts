@@ -13,7 +13,6 @@ export async function get({ params }) {
     }
 
     const game = data[0];
-    game.author = new User(game.author).toPOJO();
 
     return {
         body: game

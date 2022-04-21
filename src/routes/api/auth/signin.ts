@@ -1,7 +1,10 @@
 import supabase from '$lib/db';
 import { respond } from './_respond';
 
-export async function post({ request }) {
+export async function post(params) {
+
+	const { request } = params;
+
 	const { email, password } = await request.json();
 
 	const { session, error } = await supabase.auth.signIn({
@@ -9,10 +12,12 @@ export async function post({ request }) {
 		password
 	});
 
-	const { data: [user] } = await supabase
+	const { data } = await supabase
 		.from('profiles')
 		.select('*')
 		.eq('id', session.user.id);
 
-	return respond({user}, error);
+	const user = data[0];
+
+	return respond(user, error, params);
 }

@@ -16,7 +16,7 @@
 
 <section id="description">
     <b>
-        <a href={`/user/${game.author.username}`}>{game.author.displayName}</a>
+        <a href={`/user/${game.author.username}`}>{game.author.display_name}</a>
     </b>
     {#if game.description}
         <p 

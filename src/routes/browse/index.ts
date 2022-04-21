@@ -19,7 +19,7 @@ export async function get({ locals }) {
 
     if (error) {
         return { 
-            status: 401, 
+            status: 500, 
             body: { 
                 error
             } 

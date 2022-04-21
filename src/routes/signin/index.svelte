@@ -23,9 +23,7 @@
     let submitting = false;
     let email = "";
     let password = "";
-    let error = null;
-
-    const route = $page.url.searchParams.get("goto") || "/";
+    let err = null;
 
     async function signIn() {
         
@@ -33,14 +31,13 @@
 
         submitting = true;
         
-        const { user, message, ...rest } = await post("/api/auth/signin", { email, password });
+        const { user, error } = await post(`/api/auth/signin${$page.url.search}`, { email, password });
         
-        if (message) return error = message;
+        if (error) return err = error;
 
         $session.user = user;
         
         submitting = false;
-        goto(route);
     }
 </script>
 
@@ -48,8 +45,8 @@
     <EmailRow bind:value={email} />
     <PasswordRow bind:value={password} />
     
-    {#if error}
-    <div style="color: red;">{error}</div>
+    {#if err}
+        <div style="color: red;">{err}</div>
     {/if}
     
     <SubmitButton disabled={submitting}>Submit</SubmitButton>

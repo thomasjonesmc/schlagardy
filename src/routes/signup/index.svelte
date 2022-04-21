@@ -20,7 +20,6 @@
     import InputRow from "$lib/components/Form/InputRow.svelte";
     import EmailRow from "$lib/components/Form/EmailRow.svelte";
     import PasswordRow from "$lib/components/Form/PasswordRow.svelte";
-    import User from "$lib/models/user.model";
     import CheckBoxRow from "$lib/components/Form/CheckBoxRow.svelte";
 
     let submitting = false;

@@ -1,21 +1,30 @@
 import User from "$lib/models/user.model";
 
-export function respond({ user }, error) {
+export function respond(user, error, params) {
+
+	const { url } = params;
+	const location = url.searchParams.get("goto") || "/";
 	
     if (error) {
-		return { status: 401, body: error };
+		return { 
+			status: 401, 
+			body: {
+				error
+			} 
+		};
 	}
 
-	const sessionUser = new User(user);
-
 	const value = Buffer
-		.from(sessionUser.toJSON())
+		.from(JSON.stringify(user))
 		.toString('base64');
 
 	return {
 		headers: {
 			'set-cookie': `user=${value}; Path=/; HttpOnly`
 		},
-		body: { user: { ...sessionUser } }
+		body: {
+			user,
+			error
+		}
 	};
 }
