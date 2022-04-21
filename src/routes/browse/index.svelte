@@ -1,30 +1,12 @@
-<script lang="ts" context="module">
-    export async function load({ session, params, fetch }) {
-
-		// if (!session.user) return { status: 302, redirect: `/` };
-
-		const response = await fetch(`/api/game`);		
-
-		return {
-			status: response.status,
-			props: {
-				games: response.ok && (await response.json())
-			}
-		};
-	}
-</script>
-
-
 <script lang="ts">
 	import { goto } from "$app/navigation";
 	import { session } from "$app/stores";
-	import Button from "$lib/components/Buttons/Button.svelte";
 	import ButtonLink from "$lib/components/Buttons/ButtonLink.svelte";
 	import LinkButton from "$lib/components/Buttons/LinkButton.svelte";
 	import type Game from "$lib/models/game.model";
 	import { dateTime, del } from "$lib/util";
 
-	export let games: Array<Game> = [];
+	export let games: Array<Game>;
 
 	async function onDelete(id: number) {
 		const res = await del(`/api/game/${id}`);
@@ -36,7 +18,7 @@
 <div id="browse">
 	<header>
 		<h1>{games.length === 0 ? "No Games Found" : "Games"}</h1>
-		<ButtonLink href="/create" style="width: max-content;">
+		<ButtonLink href="/create">
 			Create Game
 		</ButtonLink>
 	</header>
@@ -65,7 +47,9 @@
 					<a href={`/game/${g.id}/edit`}>
 						Edit Game
 					</a>
-					<LinkButton on:click={() => onDelete(g.id)}>Delete Game</LinkButton>
+					<LinkButton on:click={() => onDelete(g.id)}>
+						Delete Game
+					</LinkButton>
 				</div>
 			{/if}
 		</div>
