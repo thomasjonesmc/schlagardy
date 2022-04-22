@@ -77,18 +77,17 @@
     }
 
     async function goPrevious() {
-		ordinal--;
-		goto(`/game/${game.id}/round/${ordinal}/preview`);
+		goto(`/game/${game.id}/round/${ordinal - 1}/preview`);
 	}
 
 	async function goNext() {
-		ordinal++;
-		goto(`/game/${game.id}/round/${ordinal}/preview`);
+		goto(`/game/${game.id}/round/${ordinal + 1}/preview`);
 	}
 
 </script>
 
 <div id="page">
+
     <div id="page-left" transition:scale>
 
         <div 
@@ -149,66 +148,69 @@
     </div>
 
     {#if showPlayers}
-    <div id="page-right">
-        <div id="player-controls">
-            
-            <button 
-                id="add-player"
-                on:click={addPlayer}
-            >
-                <Icon icon="ant-design:user-add-outlined" />
-            </button>
-            
-            <button on:click={() => players = shuffle(players)}>
-                <Icon icon='foundation:shuffle' />
-            </button>
-        </div>
-        
-        {#each players as p, i (p.id)}
-            <div id="player-card" animate:flip={{duration: 1000}} transition:slide|local>
-                <!-- <label for={`player-${p.id}`}>Player {i + 1}</label> -->
-                <input id={`player-${p.id}`} type="text" bind:value={p.name} placeholder={`Player ${i + 1}`} />
+        <div id="page-right">
+            <div id="player-controls">
+                
                 <button 
-                    id="delete-player" 
-                    on:click={() => players = players.filter(ply => ply.id !== p.id)}
+                    id="add-player"
+                    on:click={addPlayer}
                 >
-                    <Icon icon="bi:trash-fill" />
+                    <Icon icon="ant-design:user-add-outlined" />
                 </button>
-                <input type="number" bind:value={p.score} step={100} placeholder="Score" />
+                
+                <button on:click={() => players = shuffle(players)}>
+                    <Icon icon='foundation:shuffle' />
+                </button>
             </div>
-        {/each}
-    </div>
+            
+            {#each players as p, i (p.id)}
+                <div id="player-card" animate:flip={{duration: 1000}} transition:slide|local>
+                    <!-- <label for={`player-${p.id}`}>Player {i + 1}</label> -->
+                    <input id={`player-${p.id}`} type="text" bind:value={p.name} placeholder={`Player ${i + 1}`} />
+                    <button 
+                        id="delete-player" 
+                        on:click={() => players = players.filter(ply => ply.id !== p.id)}
+                    >
+                        <Icon icon="bi:trash-fill" />
+                    </button>
+                    <input type="number" bind:value={p.score} step={100} placeholder="Score" />
+                </div>
+            {/each}
+        </div>
     {/if}
-
 </div>
 
 <style>
     #page {
         display: flex;
-
+        flex: 1;
+        margin: 1em;
         color: var(--clr-font-accent);
         background-color: var(--clr-bg);
         border: 2px solid var(--clr-bg-dark);
         border-radius: .5em;
+        overflow: auto;
     }
 
     #page-left {
-        display: flex;
         flex: 1;
+        display: flex;
         flex-direction: column;
     }
 
     #page-right {
-
-        display: grid;
-        gap: 1.25em;
         padding: .5em;
-
+        
         box-shadow: -10px 0px 10px -10px var(--clr-bg-dark);
         border-left: 2px solid var(--clr-bg-dark);
         
-        overflow-y: scroll;
+        display: flex;
+        flex-direction: column;
+        gap: 1.25em;
 
+        overflow-y: auto;
+
+        min-height: 0px;
     }
 
     #player-card {

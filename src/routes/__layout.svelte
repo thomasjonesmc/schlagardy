@@ -11,13 +11,21 @@
     });
 </script>
 
-<Header />
-<main>
-    <slot></slot>
-</main>
-<Footer />
+<div>
+    <Header />
+    <main>
+        <slot></slot>
+    </main>
+    <Footer />
+</div>
 
 <style>
+    div {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
     main {
         padding: 1em;
         display: flex;
@@ -25,5 +33,4 @@
         flex: 1;
         height: 100%;
     }
-
 </style>
