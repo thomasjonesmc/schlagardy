@@ -8,8 +8,9 @@
         justify-content: flex-end;
         gap: .5em;
         align-items: center;
-        background-color: salmon;
-        padding: 1em;
+        background-color: var(--clr-bg-accent);
+        border-top: 1px solid var(--clr-bg-dark);
+        padding: .5em;
     }
 
     footer > *:first-child {

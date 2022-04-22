@@ -1,10 +1,9 @@
 <script lang="ts">
-    import { session } from "$app/stores";
-
     import ButtonLink from "$lib/components/Buttons/ButtonLink.svelte";
+    import type Game from "$lib/models/game.model";
     import RoundCard from "./_RoundCard.svelte";
 
-    export let game = $session.game;
+    export let game: Game;
     export let me: boolean;
 </script>
 
@@ -21,7 +20,7 @@
 
     {#if me}
         <ButtonLink 
-            href={`/game/${$session.game.id}/round/create`}
+            href={`/game/${game.id}/round/create`}
             style="width: max-content;"
         >
             Add New Round

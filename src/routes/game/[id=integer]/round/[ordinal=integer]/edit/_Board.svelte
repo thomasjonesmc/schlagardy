@@ -5,7 +5,6 @@
 
     export let board: Board;
     export let ordinal: number;
-    export let showQuestions: boolean;
 
     function editRow(row: number, removeAmount=0) {
 
@@ -74,7 +73,7 @@
     </div>
     {#each board.rows as row, i}
         <div class="row-cell">
-            <input placeholder="value" bind:value={row} />
+            <input placeholder="value" bind:value={row} class:empty={isNaN(parseFloat(row.toString()))} />
 
             <div class="controls">
                 <button type="button" on:click={() => deleteRow(i)}>
@@ -89,7 +88,7 @@
 
     {#each board.categories as cat, col}
         <div class="col-cell">
-            <input placeholder="Category Name" bind:value={cat.category} />
+            <input placeholder="Category Name" bind:value={cat.category} class:empty={cat.category === ''}/>
         
             <div class="controls">
                 <button type="button" on:click={() => deleteCol(col)}>
@@ -104,7 +103,6 @@
             <CellComponent 
                 bind:cell
                 bind:board
-                {showQuestions}
                 {row} {col}
             />
         {/each}
@@ -124,10 +122,9 @@
         /* grid-template-rows: repeat(6, 1fr);
         grid-template-columns: 50px repeat(6, 1fr); */
         /* overflow-x: auto; */
-        background-color: black;
+        background-color: var(--clr-bg-dark);
+        border: 2px solid var(--clr-bg-dark);
         gap: 2px;
-        border: 2px solid black;
-        box-shadow: 0 0 1em 0 gray;
         border-radius: .25em;
         width: 100%;
         height: 100%;
@@ -136,43 +133,36 @@
     .row-cell, .col-cell {
         display: grid;
         position: relative;
-        background-color: white;
+        background-color: var(--clr-bg-accent);
     }
 
     .row-cell:hover .controls,
     .col-cell:hover .controls {
         display: flex;
+        gap: 2px;
     }
-
-
-    /* .col-cell .controls {
-        right: auto;
-        transform: translateY(-50%) translateX(-50%);
-        left: 0;
-    } */
 
     .controls {
         width: max-content;
         position: absolute;
         display: none;
         border-radius: .25em;
-        border: 1px solid rgb(20, 20, 20);
-        background-color: rgb(43, 43, 43);
-        color: rgb(189, 189, 189);
+        border: 2px solid var(--clr-bg-dark);
+        background-color: var(--clr-bg-dark);
+        color: var(--clr-font-accent);
         right: 0;
-        transform: translateY(-50%) translateX(50%);
+        transform: translateY(-50%) translateX(20%);
         position: absolute;
         font-size: large;
         z-index: 2;
     }
 
     .controls button {
+        background-color: var(--clr-bg-accent);
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: x-large;
-        color: inherit;
-        background-color: inherit;
         border: none;
     }
 
@@ -182,5 +172,11 @@
         width: 100%;
         height: 100%;
         text-align: center;
+        background-color: var(--clr-bg-accent);
+        color: var(--clr-font);
+    }
+
+    .empty {
+        color: var(--clr-font-red);
     }
 </style>

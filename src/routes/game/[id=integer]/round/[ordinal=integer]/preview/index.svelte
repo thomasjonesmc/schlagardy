@@ -173,25 +173,31 @@ import { shuffle } from '$lib/util';
 
 <style>
     #page {
-        display: flex;
         flex: 1;
-        color: lightgray;
-        background-color: hsl(200, 15%, 15%);
-        overflow: auto;
+        display: flex;
+        color: var(--clr-font-accent);
+        background-color: var(--clr-bg);
+        border: 2px solid var(--clr-bg-dark);
+        border-radius: .5em;
+        overflow: hidden;
     }
 
     #page-left {
         flex: 1;
         display: flex;
         flex-direction: column;
+        overflow: none;
     }
 
     #page-right {
-        box-shadow: -10px 0px 10px -10px black;
+        box-shadow: -10px 0px 10px -10px var(--clr-bg-dark);
+        border-left: 2px solid var(--clr-bg-dark);
+        min-width: 250px;
+        max-width: 500px;
         padding: .5em;
         display: flex;
         flex-direction: column;
-        gap: 1em;
+        gap: 1.25em;
         overflow: auto;
         position: sticky;
         top: 0;
@@ -200,7 +206,8 @@ import { shuffle } from '$lib/util';
     #player-card {
         display: flex;
         flex-direction: column;
-        border: 1px solid lightgray;
+        border: 1px solid var(--clr-bg-dark);
+        background-color: var(--clr-bg-accent);
         padding: .5em;
         border-radius: .25em;
         gap: 1em;
@@ -220,6 +227,8 @@ import { shuffle } from '$lib/util';
         border-radius: .1em;
         display: flex;
         justify-content: center;
+        background-color: var(--clr-bg-accent);
+        border: 1px solid var(--clr-bg-dark);
     }
 
     #delete-player {
@@ -229,9 +238,9 @@ import { shuffle } from '$lib/util';
         transform: translateY(-50%);
         border-radius: 50%;
         border: none;
-        background-color: white;
-        color: black;
-        border: 1px solid black;
+        background-color: var(--clr-bg-accent);
+        color: var(--clr-font-accent);
+        border: 1px solid var(--clr-bg-dark);
         padding: .5em;
     }
 
@@ -239,18 +248,15 @@ import { shuffle } from '$lib/util';
         flex: 1;
         gap: 2px;
         display: grid;
-        background-color: black;
+        background-color: var(--clr-bg-dark);
         grid-auto-flow: column;
     }
 
     .category {
         text-align: center;
-        background-color: hsl(200, 15%, 15%);
+        background-color: var(--clr-bg);
         font-size: 2rem;
         font-weight: bold;
-        
-        filter: brightness(150%);
-
         position: sticky;
         top: 0;
     }
@@ -271,8 +277,8 @@ import { shuffle } from '$lib/util';
     #controls {
         display: flex;
         justify-content: center;
-        background-color: hsl(200, 15%, 15%);
-        box-shadow: 0 -10px 5px -10px black;
+        background-color: var(--clr-bg);
+        border-top: 2px solid var(--clr-bg-dark);
         padding: 1em;
         gap: 1em;
         position: sticky;
@@ -313,8 +319,9 @@ import { shuffle } from '$lib/util';
         font-size: xx-large;
         display: grid;
         place-content: center;
-        color: black;
+        color: var(--clr-font-dark);
         opacity: 100%;
+        background-color: var(--clr-bg-light);
     }
 
     #overlay-toggle {

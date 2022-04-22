@@ -15,17 +15,17 @@
         text-decoration: none;
         font-size: inherit;
         color: inherit;
-        background-color: white;
-        border: 1px solid gray;
+        background-color: var(--clr-bg-accent);
+        border: 1px solid var(--clr-bg-dark);
         padding: 0.25em 0.5em;
         border-radius: 0.25em;
         transition: .3s ease-in-out;
     }
 
     .btn-submit {
-        background-color: salmon;
+        background-color: var(--clr-bg-accent);
         color: white;
-        border: 1px solid rgb(119, 55, 55);
+        border: 1px solid var(--clr-bg-dark);
     }
 
     .btn-success {

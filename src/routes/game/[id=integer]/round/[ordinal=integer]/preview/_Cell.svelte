@@ -24,7 +24,7 @@
 <style>
     .cell {
         text-align: center;
-        background-color: hsl(200, 15%, 15%);
+        background-color: var(--clr-bg-accent);
         font-size: 2rem;
         font-weight: bold;
     }

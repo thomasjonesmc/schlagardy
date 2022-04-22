@@ -62,9 +62,9 @@
 	
 	<!-- <Description /> -->
 	
-	<RoundsSection {me} />
+	<RoundsSection {game} {me} />
 	
-	<Options {me} />
+	<Options {game} {me} />
 
 	<!-- <pre>{JSON.stringify(game, null, 4)}</pre> -->
 </Page>

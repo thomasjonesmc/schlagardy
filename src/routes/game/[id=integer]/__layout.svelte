@@ -1,10 +1,13 @@
 <script lang="ts" context="module">
-    import { layoutLoad } from "./_load";
+    export async function load({ fetch, params, session }) {
 
-    export async function load(params) {
-        return layoutLoad(params);
+        const res = await fetch(`/api/game/${params.id}`);
+        const stuff = await res.json();
+
+        session.game = stuff.game;
+
+        return { stuff };
     }
 </script>
-
 
 <slot></slot>

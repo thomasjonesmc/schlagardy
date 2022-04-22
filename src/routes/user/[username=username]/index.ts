@@ -12,8 +12,8 @@ export async function get({ params }) {
     const user = data[0];
     
     if (error) status = 500;
-    if (data.length === 0) status = 404;
-    if (!user.is_public) status = 401;
+    else if (!user) status = 404;
+    else if (!user.is_public) status = 401;
 
     return {
         status,

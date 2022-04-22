@@ -21,8 +21,8 @@
     }
 
     .submit {
-        background-color: salmon;
-        color: white;
+        background-color: var(--clr-accent);
+        color: var(--clr-font);
         border: 1px solid rgb(119, 55, 55);
     }
 </style>

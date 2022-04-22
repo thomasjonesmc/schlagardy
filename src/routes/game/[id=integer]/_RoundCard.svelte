@@ -41,31 +41,32 @@ import { goto } from "$app/navigation";
         min-width: fit-content;
         /* max-width: max-content; */
         padding: .5em;
-        border: 1px solid lightgray;
+        background-color: var(--clr-bg-accent);
+        border: 1px solid var(--clr-bg-dark);
         border-radius: .25em;
         cursor: pointer;
     }
 
     .board-size {
-		color: gray;
+		color: var(--clr-font-dark);
 		font-size: .9rem;
 	}
 
     .round-controls {
         display: none;
         position: absolute;
+        background-color: var(--clr-bg-dark);
+        border: 1px solid var(--clr-bg-dark);
+        color: var(--clr-font-accent);
         top: 0;
         right: .3em;
         transform: translateY(-50%);
-        border: 1px solid lightgray;
-        background-color: lightgray;
         z-index: 1;
         border-radius: .25em;
         overflow: hidden;
     }
-
+    
     .round-controls > * {
-        background-color: white;
         flex: 1;
         width: 100%;
         height: 100%;
@@ -73,6 +74,7 @@ import { goto } from "$app/navigation";
         border: none;
         font-size: 1.2rem;
         padding: .1em;
+        background-color: var(--clr-bg-accent);
     }
 
     .round:hover .round-controls, 

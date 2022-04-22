@@ -11,26 +11,19 @@
     });
 </script>
 
+<Header />
 <main>
-    <Header />
-    <div>
-        <slot></slot>
-    </div>
-    <Footer />
+    <slot></slot>
 </main>
+<Footer />
 
 <style>
     main {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-    }
-    
-    div {
         padding: 1em;
         display: flex;
         flex-direction: column;
         flex: 1;
         height: 100%;
     }
+
 </style>

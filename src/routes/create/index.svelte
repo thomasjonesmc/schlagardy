@@ -1,16 +1,3 @@
-<script lang="ts" context="module">
-    export function load({ session }) {
-		if (!session.user) {
-			return {
-				status: 302,
-				redirect: `/signin?goto=/create`
-			};
-		}
-
-		return {};
-	}
-</script>
-
 <script lang="ts">
 	import { goto } from "$app/navigation";
 

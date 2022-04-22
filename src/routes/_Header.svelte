@@ -22,8 +22,9 @@
         justify-content: flex-end;
         gap: 0.75em;
         align-items: center;
-        background-color: salmon;
-        padding: 1em;
+        background-color: var(--clr-bg-accent);
+        border-bottom: 1px solid var(--clr-bg-dark);;
+        padding: .5em;
     }
 
     header > *:first-child {

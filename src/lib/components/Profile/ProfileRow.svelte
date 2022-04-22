@@ -13,12 +13,12 @@
     div {
         display: flex;
         justify-content: space-between;
-        border-top: 1px solid lightgray;
+        border-top: 1px solid var(--clr-bg-dark);
         padding: 1em 10px;
     }
 
     p {
-        color: rgb(58, 58, 58);
+        color: var(--clr-font-accent);
     }
 
     @media screen and (max-width: 550px) {

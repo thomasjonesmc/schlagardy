@@ -1,10 +1,6 @@
-<script context="module" lang="ts">
-	export async function load({ session, stuff, params }) {
-		return {
-			props: {
-				me: stuff.me
-			}
-		}
+<script lang="ts" context="module">
+	export function load({ stuff }) {
+		return { props: { ...stuff } }
 	}
 </script>
 
@@ -13,19 +9,21 @@
 	import Options from "./_Options.svelte";
 	import Header from "./_Header.svelte";
 	import Description from "./_Description.svelte";
-import Page from "./_Page.svelte";
+	import Page from "./_Page.svelte";
+	import type Game from "$lib/models/game.model";
 
+	export let game: Game;
 	export let me: boolean;
 </script>
 
 <Page>
-	<Header />
+	<Header {game} />
 	
-	<Description />
+	<Description {game} />
 	
-	<RoundsSection {me} />
+	<RoundsSection {game} {me} />
 	
-	<Options {me} />
+	<Options {game} {me} />
 </Page>
 
 

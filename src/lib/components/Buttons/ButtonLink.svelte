@@ -12,9 +12,9 @@
         display: inline-block;
         text-decoration: none;
         font: inherit;
-        background-color: white;
+        background-color: var(--clr-bg-accent);
+        border: 1px solid var(--clr-bg-dark);
         color: inherit;
-        border: 1px solid gray;
         padding: 0.25em 0.5em;
         border-radius: 0.25em;
     }

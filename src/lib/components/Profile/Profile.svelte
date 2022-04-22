@@ -21,16 +21,16 @@
     </div>
 {/if}
 
-<pre>
+<!-- <pre>
     {JSON.stringify($session.user, null, 4)}
-</pre>
+</pre> -->
 
 <style>
     #profile {
         margin: 0 auto;
         max-width: 800px;
         width: 100%;
-        border: 1px solid lightgray;
+        border: 1px solid var(--clr-bg-dark);
         border-radius: .5em;
     }
 

@@ -1,9 +1,10 @@
 <script lang="ts">
-    import { session } from "$app/stores";
     import LinkButton from "$lib/components/Buttons/LinkButton.svelte";
+    import type Game from "$lib/models/game.model";
     import { isOverflown } from "$lib/util";
     import { onMount } from "svelte";
-    let game = $session.game;
+    
+    export let game: Game;
 
     let overflown = true;
 	let description: HTMLParagraphElement;
@@ -37,7 +38,7 @@
 <style>
     #description {
 		padding: 1em 0;
-		border-bottom: 1px solid lightgray;
+		border-bottom: 1px solid var(--clr-bg-dark);
 	}
 	
 	.overflown {

@@ -13,19 +13,23 @@
 <script lang="ts">
 	import SubmitButton from "$lib/components/Buttons/SubmitButton.svelte";
 	import Board from "./_Board.svelte";
-	import Game, { Round, Category, Cell } from "$lib/models/game.model";
 	import { put } from "$lib/util";
-	import { goto } from "$app/navigation";
+	import { beforeNavigate, goto } from "$app/navigation";
 	import LinkButton from "$lib/components/Buttons/LinkButton.svelte";
-	import Button from "$lib/components/Buttons/Button.svelte";
 	import { isEqual } from "lodash";
+	import ButtonLink from "$lib/components/Buttons/ButtonLink.svelte";
+	import type Game from "$lib/models/game.model";
+	import type { Round } from "$lib/models/game.model";
 
 	export let ordinal: number;
 	export let game: Game;
 	export let round: Round;
 
 	let saving = false;
-	let showQuestions = true;
+
+	beforeNavigate(() => {
+		saveRound();
+	});
 
 	async function saveRound() {
 		saving = true;
@@ -39,34 +43,12 @@
 		saveRound();
 	}
 
-	async function addRound() {
-		goto(`/game/${game.id}/round/create`);
-	}
-
 	async function goPrevious() {
-		ordinal--;
-		goto(`/game/${game.id}/round/${ordinal}/edit`);
+		goto(`/game/${game.id}/round/${ordinal - 1}/edit`);
 	}
 
 	async function goNext() {
-		ordinal++;
-		goto(`/game/${game.id}/round/${ordinal}/edit`);
-	}
-
-	function addRow() {
-		let rows = round.board.rows;
-		let r = rows[rows.length - 1];
-
-		round.board.rows = [ ...rows, r ];
-
-		round.board.categories = round.board.categories.map(c => {
-			return { ...c, cells: [ ...c.cells, new Cell() ]}
-		});
-	}
-
-	function addCategory() {
-		let cats = round.board.categories;
-		round.board.categories = [ ...cats, new Category(round.board.rows.length) ];
+		goto(`/game/${game.id}/round/${ordinal + 1}/edit`);
 	}
 
 	function hasUnsavedChanges(round: Round, prev: Round) {
@@ -102,7 +84,6 @@
 
 </script>
 
-
 <form on:submit|preventDefault={onSubmit} id="page">
 	<header>
 		<h1>
@@ -116,19 +97,14 @@
 	</header>
 	<div id="round-buttons">
 		<SubmitButton disabled={saving}>Save Changes</SubmitButton>
-		<Button disabled={saving} on:click={addRound}>Add Round</Button>
-		<Button disabled={saving} on:click={addRow}>Add Row</Button>
-		<Button disabled={saving} on:click={addCategory}>Add Category</Button>
-		<div id="qa-toggle">
-			<label for="show-type">Toggle Q/A</label>
-			<input id="show-type" type="checkbox" bind:checked={showQuestions} />
-		</div>
+		<ButtonLink href={`/game/${game.id}/round/create`}>Add Round</ButtonLink>
+		<ButtonLink href={`/game/${game.id}/round/${ordinal}/preview`}>View Preview</ButtonLink>
 	</div>
 	<div id="input-container">
 		<input type="text" placeholder="Round Title" bind:value={round.title} />
 	</div>
 
-	<Board bind:board={round.board} {ordinal} {showQuestions} />
+	<Board bind:board={round.board} {ordinal} />
 </form>
 
 <!-- <pre>{JSON.stringify(round, null, 4)}</pre> -->
@@ -149,7 +125,7 @@
 		display: flex;
 		justify-content: center;
 		gap: .75em;
-		color: gray;
+		color: var(--clr-font-accent);
 	}
 
 	h1, p {
@@ -168,7 +144,6 @@
 		font-size: 1.25rem;
 		flex: 1;
 		border: none;
-		box-shadow: 0 0 .8em 0 gray;
 		border-radius: .25em;
 	}
 
@@ -176,12 +151,5 @@
 		display: flex;
 		justify-content: center;
 		gap: 1em;
-	}
-
-	#qa-toggle {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: flex-start;
 	}
 </style>

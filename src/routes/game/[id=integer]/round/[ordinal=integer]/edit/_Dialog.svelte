@@ -33,6 +33,9 @@
         margin: auto;
         border: none;
         border-radius: .25em;
+        background-color: var(--clr-bg);
+        border: 1px solid var(--clr-bg-dark);
+        color: var(--clr-font);
     }
     
     .edit-container {
@@ -43,6 +46,6 @@
 
     dialog::backdrop {
         background-color: black;
-        opacity: .75;
+        opacity: 80%;
     }
 </style>

@@ -69,12 +69,13 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		border-bottom: 1px solid lightgray;
+		border-bottom: 1px solid var(--clr-bg-dark);
 	}
 
 	.game-card {
-		box-shadow: 0 0 .85em 0 gray;
-		color: rgb(50, 50, 50);
+		border: 1px solid var(--clr-bg-dark);;
+		color: var(--clr-font);
+		background-color: var(--clr-bg-accent);
 		border-radius: .5em;
 	}
 	
@@ -97,12 +98,14 @@
 		display: flex;
 		gap: .5em;
 		padding: .25em .75em;
-		border-top: 1px solid lightgray;
+		border-top: 1px solid var(--clr-bg-dark);
+		color: var(--clr-font-accent);
+		font-size: .9rem;
 	}
 
 	b {
+		color: var(--clr-font);
 		font-size: 1.5rem;
-		color: black;
 	}
 
 	.game-stats {

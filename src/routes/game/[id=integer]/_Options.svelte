@@ -2,12 +2,14 @@
     import { goto } from "$app/navigation";
     import { page, session } from "$app/stores";
     import LinkButton from "$lib/components/Buttons/LinkButton.svelte";
+    import type Game from "$lib/models/game.model";
     import { del } from "$lib/util";
 
     export let me: boolean;
+    export let game: Game;
 
     async function onDelete() {
-		const res = await del(`/api/game/${$session.game.id}`);
+		const res = await del(`/api/game/${game.id}`);
 		goto("/browse");
 	}
 </script>

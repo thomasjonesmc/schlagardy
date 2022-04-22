@@ -1,21 +1,29 @@
 import supabase from '$lib/db';
-import User from '$lib/models/user.model';
+import type Game from '$lib/models/game.model';
 
-export async function get({ params }) {
+export async function get({ params, locals }) {
     const { data, error } = await supabase
         .from('games')
         .select('*, rounds(*), author:profiles(*)')
         .eq('id', params.id)
         .order('ordinal', {foreignTable: 'rounds'});
 
-    if (error || data.length === 0) {
-        return { status: 401, body: error };
-    }
+    const game: Game = data[0];
+    const me = locals.user?.id === game.author.id;
+    
+    let status = 200;
 
-    const game = data[0];
+    if (error) status = 500;
+    if (!game) status = 404;
+    if (!game.is_public && !me) status = 401;
 
     return {
-        body: game
+        status,
+        body: {
+            game,
+            error,
+            // me
+        }
     }
 }
 
@@ -25,12 +33,19 @@ export async function del({ params }) {
         .delete()
         .eq('id', params.id);
 
-    if (error || data.length === 0) {
-        return { status: 401, body: error };
-    }
+    const game: Game = data[0];
+
+    let status = 200;
+
+    if (error) status = 500;
+    if (!game) status = 404;
 
     return {
-        body: data[0]
+        status,
+        body: {
+            game,
+            error
+        }
     }
 }
 

@@ -1,6 +1,6 @@
-<script>
+<script lang="ts">
     import { goto } from "$app/navigation";
-    import { page, session } from "$app/stores";
+    import { session } from "$app/stores";
     import SubmitButton from "$lib/components/Buttons/SubmitButton.svelte";
     import Form from "$lib/components/Form/Form.svelte";
     import InputRow from "$lib/components/Form/InputRow.svelte";
@@ -8,12 +8,11 @@
 
     let error = null;
     let submitting = false;
+    let game = $session.game;
 
     let title = "";
     let rows = 5;
     let cols = 6;
-
-    const game = $session.game;
 
     async function onCreate() {
 
@@ -55,7 +54,7 @@
     
     <SubmitButton disabled={submitting}>Submit</SubmitButton>
     
-    <a href={`/game/${$session.game.id}`}>Back to Game</a>
+    <a href={`/game/${game.id}`}>Back to Game</a>
     <div 
         id="sample-board"
         style={`
@@ -76,14 +75,14 @@
 
     #sample-board {
         display: grid;
-        background-color: lightgray;
-        border: 1px solid lightgray;
+        background-color: var(--clr-bg-dark);
+        border: 1px solid var(--clr-bg-dark);
         gap: 1px;
         justify-self: center;
         /* width: 100%; */
     }
 
     #sample-board div {
-        background-color: white;
+        background-color: var(--clr-bg-accent);
     }
 </style>

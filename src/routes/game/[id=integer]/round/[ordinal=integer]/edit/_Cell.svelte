@@ -8,12 +8,8 @@
     export let row: number;
     export let col: number;
 
-    export let showQuestions: boolean;
-
     let cat = board.categories[col];
     let rowVal = board.rows[row];
-    let numRows = board.rows.length;
-    let numCols = board.categories.length;
 
     let dialog;
 
@@ -50,12 +46,12 @@
         on:click={openModal} 
         type="button"
     >
-        {#if cell.question && showQuestions}
+        {#if cell.question}
             <p>{cell.question}</p>
-        {:else if cell.answer && !showQuestions}
+        {:else if cell.answer}
             <p>{cell.answer}</p>
         {:else}
-            <p>{rowVal}</p>
+            <p>{rowVal || "Empty"}</p>
         {/if}
     </button>
 </div>
@@ -99,17 +95,17 @@
 
 
     .finished {
-        background-color: lightgreen;
-        color: green;
+        background-color: var(--clr-bg-green);
+        color: var(--clr-font-green);
     }
 
     .unfinished {
-        background-color: rgb(255, 191, 191);
-        color: rgb(167, 30, 30);
+        background-color: var(--clr-bg-red);
+        color: var(--clr-font-red);
     }
 
     .in-progress {
-        background-color: rgb(248, 248, 103);
-        color: rgb(80, 80, 0);
+        background-color: var(--clr-bg-yellow);
+        color: var(--clr-font-yellow);
     }
 </style>

@@ -15,6 +15,8 @@
         const numRows = round.board.rows.length;
         const numCols = round.board.categories.length;
 
+        session.players = [];
+
         return {
             stuff: {
                 round,

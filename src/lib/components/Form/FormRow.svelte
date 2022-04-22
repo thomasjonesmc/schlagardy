@@ -29,7 +29,7 @@
     }
 
     .label-container p {
-        color: gray;
+        color: var(--clr-font-accent);
     }
 
     .checkbox-row {
