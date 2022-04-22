@@ -24,7 +24,7 @@
 	}
 
 	#sub-header {
-		color: var(--clr-font-dark);
+		color: var(--clr-font-accent);
 		display: flex;
 		font-size: .9rem;
 		align-items: center;

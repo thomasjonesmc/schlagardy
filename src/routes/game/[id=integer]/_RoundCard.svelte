@@ -48,7 +48,7 @@ import { goto } from "$app/navigation";
     }
 
     .board-size {
-		color: var(--clr-font-dark);
+		color: var(--clr-font-accent);
 		font-size: .9rem;
 	}
 

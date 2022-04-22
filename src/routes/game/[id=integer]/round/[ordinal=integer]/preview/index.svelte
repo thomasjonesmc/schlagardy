@@ -20,7 +20,8 @@
     import { session } from '$app/stores';
     import type Game from '$lib/models/game.model';
     import LinkButton from '$lib/components/Buttons/LinkButton.svelte';
-import { shuffle } from '$lib/util';
+    import { shuffle } from '$lib/util';
+    import { onMount } from 'svelte';
 
     export let game: Game;
     export let ordinal: number;
@@ -38,6 +39,16 @@ import { shuffle } from '$lib/util';
     let players = $session.players;
 
     $: disabled = !!activeCell;
+
+    onMount(() => {
+        players = Array(15).fill(0).map(() => {
+            return { name: "", score: 0, id: Math.random() }
+        })
+    })
+
+    function addPlayer() {
+        players = [...players, { name: "", score: 0, id: Math.random() }]
+    }
 
     function showAnswer() {
 
@@ -78,7 +89,7 @@ import { shuffle } from '$lib/util';
 </script>
 
 <div id="page">
-    <div id="page-left">
+    <div id="page-left" transition:scale>
 
         <div 
             id="board"
@@ -138,69 +149,66 @@ import { shuffle } from '$lib/util';
     </div>
 
     {#if showPlayers}
-        <div id="page-right" transition:scale|local>
-            <div id="player-controls">
-
+    <div id="page-right">
+        <div id="player-controls">
+            
             <button 
                 id="add-player"
-                on:click={() => players = [...players, { name: "", score: 0, id: Math.random() }]}
-                >
+                on:click={addPlayer}
+            >
                 <Icon icon="ant-design:user-add-outlined" />
             </button>
-
+            
             <button on:click={() => players = shuffle(players)}>
                 <Icon icon='foundation:shuffle' />
             </button>
         </div>
-
-            {#each players as p, i (p.id)}
-                <div id="player-card" animate:flip={{duration: 1000}} transition:slide={{duration: 500}}>
-                    <!-- <label for={`player-${p.id}`}>Player {i + 1}</label> -->
-                    <input id={`player-${p.id}`} type="text" bind:value={p.name} placeholder={`Player ${i + 1}`} />
-                    <button 
-                        id="delete-player" 
-                        on:click={() => players = players.filter(ply => ply.id !== p.id)}
-                    >
-                        <Icon icon="bi:trash-fill" />
-                    </button>
-                    <input type="number" bind:value={p.score} step={100} placeholder="Score" />
-                </div>
-            {/each}
-        </div>
+        
+        {#each players as p, i (p.id)}
+            <div id="player-card" animate:flip={{duration: 1000}} transition:slide|local>
+                <!-- <label for={`player-${p.id}`}>Player {i + 1}</label> -->
+                <input id={`player-${p.id}`} type="text" bind:value={p.name} placeholder={`Player ${i + 1}`} />
+                <button 
+                    id="delete-player" 
+                    on:click={() => players = players.filter(ply => ply.id !== p.id)}
+                >
+                    <Icon icon="bi:trash-fill" />
+                </button>
+                <input type="number" bind:value={p.score} step={100} placeholder="Score" />
+            </div>
+        {/each}
+    </div>
     {/if}
 
 </div>
 
 <style>
     #page {
-        flex: 1;
         display: flex;
+
         color: var(--clr-font-accent);
         background-color: var(--clr-bg);
         border: 2px solid var(--clr-bg-dark);
         border-radius: .5em;
-        overflow: hidden;
     }
 
     #page-left {
-        flex: 1;
         display: flex;
+        flex: 1;
         flex-direction: column;
-        overflow: none;
     }
 
     #page-right {
+
+        display: grid;
+        gap: 1.25em;
+        padding: .5em;
+
         box-shadow: -10px 0px 10px -10px var(--clr-bg-dark);
         border-left: 2px solid var(--clr-bg-dark);
-        min-width: 250px;
-        max-width: 500px;
-        padding: .5em;
-        display: flex;
-        flex-direction: column;
-        gap: 1.25em;
-        overflow: auto;
-        position: sticky;
-        top: 0;
+        
+        overflow-y: scroll;
+
     }
 
     #player-card {
