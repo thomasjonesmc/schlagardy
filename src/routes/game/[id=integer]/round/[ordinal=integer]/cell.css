@@ -1,0 +1,39 @@
+.first-category {
+    transform-origin: left;
+}
+
+.last-category {
+    transform-origin: right;
+}
+
+.first-row {
+    transform-origin: top;
+}
+
+.last-row {
+    transform-origin: bottom;
+}
+
+.tl-cell {
+    transform-origin: top left;
+}
+
+.tr-cell {
+    transform-origin: top right;
+}
+
+.bl-cell {
+    transform-origin: bottom left;
+}
+
+.br-cell {
+    transform-origin: bottom right;
+}
+
+.cell:hover {
+    z-index: 1;
+    transform: scale(1.2);
+    box-shadow: 0 0 1em 0 black;
+    border-radius: .25em;
+    overflow: hidden;
+}
