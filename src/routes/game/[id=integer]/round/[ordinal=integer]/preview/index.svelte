@@ -40,22 +40,15 @@
 
     $: disabled = !!activeCell;
 
-    onMount(() => {
-        players = Array(15).fill(0).map(() => {
-            return { name: "", score: 0, id: Math.random() }
-        })
-    })
-
     function addPlayer() {
-        players = [...players, { name: "", score: 0, id: Math.random() }]
+        players = [...players, { name: "", score: 0, id: Math.random() }];
     }
 
     function showAnswer() {
 
+        if (!activeCell ||   spin) return;
+
         round.board.categories[activeCol].cells[activeRow].opened = true;
-
-        if (spin) return;
-
         spin = !spin;
         showQuestion = !showQuestion;
 
@@ -88,7 +81,7 @@
 
 <div id="page">
 
-    <div id="page-left" transition:scale>
+    <div id="page-left" transition:scale|local>
 
         <div 
             id="board"
@@ -118,7 +111,7 @@
                 <!-- <Overlay bind:activeCell bind:round {activeRow} {activeCol} /> -->
 
                 <!-- nesting at this depth prevents transition bugs?? -->
-                <div id="overlay" class:spin transition:scale={{duration: 1000}}>
+                <div id="overlay" class:spin transition:scale|local={{duration: 1000}}>
                     <button id="exit-button" on:click={closeOverlay} disabled={spin}>
                         <Icon icon="heroicons-solid:x" />
                     </button>
@@ -154,26 +147,28 @@
                 <button 
                     id="add-player"
                     on:click={addPlayer}
+                    {disabled}
                 >
                     <Icon icon="ant-design:user-add-outlined" />
                 </button>
                 
-                <button on:click={() => players = shuffle(players)}>
+                <button on:click={() => players = shuffle(players)} {disabled}>
                     <Icon icon='foundation:shuffle' />
                 </button>
             </div>
             
             {#each players as p, i (p.id)}
-                <div id="player-card" animate:flip={{duration: 1000}} transition:slide|local>
+                <div id="player-card" animate:flip|local={{duration: 250}} transition:slide|local>
                     <!-- <label for={`player-${p.id}`}>Player {i + 1}</label> -->
-                    <input id={`player-${p.id}`} type="text" bind:value={p.name} placeholder={`Player ${i + 1}`} />
+                    <input id={`player-${p.id}`} type="text" bind:value={p.name} placeholder={`Player ${i + 1}`} {disabled} />
                     <button 
-                        id="delete-player" 
+                        id="delete-player"
+                        {disabled}
                         on:click={() => players = players.filter(ply => ply.id !== p.id)}
                     >
                         <Icon icon="bi:trash-fill" />
                     </button>
-                    <input type="number" bind:value={p.score} step={100} placeholder="Score" />
+                    <input type="number" bind:value={p.score} step={100} placeholder="Score" {disabled} />
                 </div>
             {/each}
         </div>
@@ -189,13 +184,14 @@
         background-color: var(--clr-bg);
         border: 2px solid var(--clr-bg-dark);
         border-radius: .5em;
-        overflow: auto;
+        overflow: hidden;
     }
 
     #page-left {
         flex: 1;
         display: flex;
         flex-direction: column;
+        overflow: auto;
     }
 
     #page-right {
@@ -207,10 +203,11 @@
         display: flex;
         flex-direction: column;
         gap: 1.25em;
-
         overflow-y: auto;
+        overflow-x: none;
 
-        min-height: 0px;
+        width: 250px;
+        min-width: 200px;
     }
 
     #player-card {

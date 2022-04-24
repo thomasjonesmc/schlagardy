@@ -32,6 +32,7 @@
         width: 100%;
         border: 1px solid var(--clr-bg-dark);
         border-radius: .5em;
+        background-color: var(--clr-bg-accent);
     }
 
     h1 {

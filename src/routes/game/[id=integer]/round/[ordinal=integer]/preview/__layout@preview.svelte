@@ -1,7 +1,7 @@
 <script context="module" lang="ts">
     import type { Round } from "$lib/models/game.model";
 
-    export async function load({session, params}) {
+    export async function load({session, stuff, params}) {
         const ordinal = parseInt(params.ordinal);
         const round: Round = session.game.rounds.find((r: Round) => r.ordinal === ordinal);
 
@@ -29,7 +29,7 @@
 </script>
 
 <script>
-    import "./cell.css";
+    import "../cell.css";
 </script>
 
 <slot></slot>

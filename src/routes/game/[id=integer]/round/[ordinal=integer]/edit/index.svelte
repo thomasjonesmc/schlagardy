@@ -27,8 +27,9 @@
 
 	let saving = false;
 
-	beforeNavigate(() => {
-		saveRound();
+	beforeNavigate(async () => {
+		console.log("HUH");
+		await saveRound();
 	});
 
 	async function saveRound() {

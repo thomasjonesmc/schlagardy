@@ -9,7 +9,7 @@ export async function get({ params, locals }) {
         .order('ordinal', {foreignTable: 'rounds'});
 
     const game: Game = data[0];
-    const me = locals.user?.id === game.author.id;
+    const me = locals.user?.id === game?.author.id;
     
     let status = 200;
 
@@ -22,7 +22,7 @@ export async function get({ params, locals }) {
         body: {
             game,
             error,
-            // me
+            me
         }
     }
 }
